@@ -407,6 +407,7 @@
   </div>
 </footer>
 
+<iframe name="hiddenFrame" style="display:none"></iframe>
 <script>
 const LANGS = ['pt','en','es','zh','hi','fr'];
 const PLACEHOLDERS = { pt:'seu@email.com', en:'your@email.com', es:'tu@email.com', zh:'您的@邮箱.com', hi:'आपका@ईमेल.com', fr:'votre@email.com' };
@@ -431,6 +432,22 @@ function submitWaitlist() {
     setTimeout(() => inp.style.outline = '', 1500);
     return;
   }
+  // Envia para Google Forms via iframe oculto (sem redirecionar a página)
+  const FORM_ACTION = 'https://docs.google.com/forms/d/e/1FAIpQLSdTG9WkJVGGzTLUq7qFLTLJjzX9J9YMY5BnhWu0kXTmsunH6w/formResponse';
+  const ENTRY_ID = 'entry.1159836105';
+  const iframe = document.getElementById('hiddenFrame');
+  const form = document.createElement('form');
+  form.method = 'POST';
+  form.action = FORM_ACTION;
+  form.target = 'hiddenFrame';
+  const input = document.createElement('input');
+  input.type = 'hidden';
+  input.name = ENTRY_ID;
+  input.value = email;
+  form.appendChild(input);
+  document.body.appendChild(form);
+  form.submit();
+  document.body.removeChild(form);
   document.getElementById('formWrap').style.display = 'none';
   document.getElementById('successMsg').classList.add('visible');
 }
