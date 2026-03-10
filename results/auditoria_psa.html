@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Auditoria de Segurança — PSA Privacy Shield Agent</title>
+<style>
+:root{--navy:#0f172a;--navy2:#1e293b;--navy3:#334155;--blue:#3b82f6;
+  --green:#10b981;--red:#ef4444;--orange:#f59e0b;--purple:#8b5cf6;
+  --text:#e2e8f0;--muted:#94a3b8;--border:#334155;--card:#1e293b}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--navy);
+  color:var(--text);font-size:14px;line-height:1.7}
+.header{background:linear-gradient(135deg,#1a0505 0%,#2d0a0a 50%,#1a0a05 100%);
+  border-bottom:2px solid #7f1d1d;padding:32px 40px}
+.header h1{font-size:28px;font-weight:700;color:#fca5a5;letter-spacing:-.5px}
+.header p{color:var(--muted);margin-top:6px;font-size:13px}
+.badge-audit{display:inline-block;background:#7f1d1d;color:#fca5a5;font-size:11px;
+  font-weight:600;padding:3px 12px;border-radius:99px;letter-spacing:.5px;margin-bottom:10px}
+.container{max-width:1100px;margin:0 auto;padding:0 40px}
+
+/* Score card */
+.score-card{display:flex;gap:32px;padding:32px 40px;align-items:center;
+  border-bottom:1px solid var(--border)}
+.score-circle{width:140px;height:140px;border-radius:50%;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;flex-shrink:0;
+  border:4px solid var(--orange);background:#1c1005}
+.score-circle .num{font-size:48px;font-weight:800;color:var(--orange)}
+.score-circle .of{font-size:13px;color:var(--muted)}
+.score-info h2{font-size:22px;font-weight:700;color:var(--orange);margin-bottom:6px}
+.score-info p{color:var(--muted);font-size:13px;max-width:600px}
+.score-stats{display:flex;gap:24px;margin-top:16px;flex-wrap:wrap}
+.score-stat{background:var(--card);border:1px solid var(--border);border-radius:8px;
+  padding:12px 18px;min-width:120px}
+.score-stat .label{font-size:10px;text-transform:uppercase;letter-spacing:.8px;color:var(--muted)}
+.score-stat .val{font-size:20px;font-weight:700;margin-top:2px}
+.val-red{color:var(--red)}.val-orange{color:var(--orange)}.val-blue{color:var(--blue)}
+.val-green{color:var(--green)}.val-muted{color:var(--muted)}
+
+/* Sections */
+.section{padding:36px 0;border-bottom:1px solid var(--border)}
+.section:last-child{border-bottom:none}
+.section h2{font-size:18px;font-weight:600;color:#fff;margin-bottom:16px;
+  padding-bottom:10px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px}
+.section h3{font-size:14px;font-weight:600;color:var(--muted);margin:20px 0 10px;
+  text-transform:uppercase;letter-spacing:.5px}
+.snum{width:28px;height:28px;border-radius:6px;display:flex;align-items:center;
+  justify-content:center;font-weight:700;font-size:13px;flex-shrink:0;
+  background:var(--navy3);color:var(--muted)}
+
+/* Tables */
+.table-wrap{overflow-x:auto;border-radius:8px;border:1px solid var(--border);margin:12px 0 20px}
+table{width:100%;border-collapse:collapse;font-size:13px}
+thead tr{background:var(--navy3)}
+thead th{padding:10px 14px;text-align:left;font-size:11px;text-transform:uppercase;
+  letter-spacing:.6px;color:var(--muted);white-space:nowrap}
+tbody tr{border-top:1px solid var(--border)}
+tbody tr:hover{background:#263348}
+tbody td{padding:9px 14px;vertical-align:top}
+.mono{font-family:'Courier New',monospace;font-size:12px}
+
+/* Tags */
+.tag{display:inline-block;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:600;white-space:nowrap}
+.tag-critical{background:#7f1d1d;color:#fca5a5}
+.tag-high{background:#78350f;color:#fcd34d}
+.tag-medium{background:#1e3a5f;color:#93c5fd}
+.tag-low{background:#064e3b;color:#6ee7b7}
+.tag-pass{background:#064e3b;color:#6ee7b7}
+.tag-fail{background:#7f1d1d;color:#fca5a5}
+.tag-warn{background:#78350f;color:#fcd34d}
+
+/* Alerts */
+.alert{border-radius:10px;padding:16px 20px;margin:16px 0;font-size:13px}
+.alert-red{background:#1c0a0a;border:1px solid #7f1d1d;color:#fca5a5}
+.alert-orange{background:#1c1005;border:1px solid #78350f;color:#fcd34d}
+.alert-blue{background:#0a1626;border:1px solid #1e3a5f;color:#93c5fd}
+.alert-green{background:#0d1f0d;border:1px solid #166534;color:#86efac}
+.alert strong{font-weight:700}
+
+.rec-list{list-style:none;counter-reset:rec}
+.rec-list li{counter-increment:rec;padding:10px 0 10px 36px;border-bottom:1px solid var(--border);
+  position:relative;color:var(--text);font-size:13px}
+.rec-list li::before{content:counter(rec);position:absolute;left:0;top:10px;
+  width:24px;height:24px;border-radius:6px;background:var(--navy3);color:var(--muted);
+  display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700}
+.rec-list li strong{color:#fff}
+
+.footer{padding:24px 40px;color:var(--muted);font-size:12px;text-align:center;
+  border-top:1px solid var(--border);margin-top:20px}
+@media(max-width:768px){
+  .container,.header,.score-card,.footer{padding-left:16px;padding-right:16px}
+  .score-card{flex-direction:column;text-align:center}
+}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="badge-audit">🔒 AUDITORIA DE SEGURANÇA</div>
+  <h1>Relatório de Auditoria — PSA Privacy Shield Agent</h1>
+  <p>Data: 10/03/2026 &nbsp;·&nbsp; Escopo: Pipeline completo de anonimização &nbsp;·&nbsp;
+     Auditor: Claude (PSA Comandante) &nbsp;·&nbsp; Versão: 1.0</p>
+</div>
+
+<!-- SCORE -->
+<div class="score-card">
+  <div class="score-circle">
+    <div class="num">62</div>
+    <div class="of">de 100</div>
+  </div>
+  <div class="score-info">
+    <h2>⚠ REPROVADO — CONDICIONAL</h2>
+    <p>O PSA funciona e protege os dados principais (nomes e CPFs em planilhas são corretamente anonimizados).
+       Porém, foram encontradas <strong>3 vulnerabilidades críticas</strong>, <strong>10 falhas de alta severidade</strong>
+       e <strong>2 vazamentos reais</strong> em arquivos de texto. O sistema necessita de correções antes de ser
+       considerado seguro para dados sensíveis em produção.</p>
+    <div class="score-stats">
+      <div class="score-stat"><div class="label">Críticas</div><div class="val val-red">3</div></div>
+      <div class="score-stat"><div class="label">Altas</div><div class="val val-orange">10</div></div>
+      <div class="score-stat"><div class="label">Médias</div><div class="val val-blue">16</div></div>
+      <div class="score-stat"><div class="label">Baixas</div><div class="val val-muted">6</div></div>
+      <div class="score-stat"><div class="label">Vazamentos</div><div class="val val-red">2</div></div>
+      <div class="score-stat"><div class="label">Arquivos OK</div><div class="val val-green">16/18</div></div>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+
+<!-- ======================================================================
+     SEÇÃO 1: RESUMO EXECUTIVO
+     ====================================================================== -->
+<div class="section">
+  <h2><span class="snum">1</span> Resumo Executivo</h2>
+
+  <div class="alert alert-orange">
+    <strong>Veredicto:</strong> O PSA cumpre seu objetivo principal — planilhas CSV/XLSX são corretamente anonimizadas
+    com nomes e CPFs substituídos por dados sintéticos. Entretanto, a camada de texto (documentos, PDFs, emails)
+    apresenta brechas no regex de detecção de nomes, e o framework de validação não bloqueia saída quando detecta vazamentos.
+    <strong>Recomendação: corrigir as 3 CRÍTICAs antes de processar dados reais em documentos de texto.</strong>
+  </div>
+
+  <div class="table-wrap"><table>
+    <thead><tr><th>Componente</th><th>Status</th><th>Score</th><th>Notas</th></tr></thead>
+    <tbody>
+      <tr><td>Planilhas (CSV/XLSX)</td><td><span class="tag tag-pass">APROVADO</span></td>
+          <td>78/100</td><td>Nomes, CPFs, salários anonimizados. Falta: colunas financeiras secundárias (BRUTO, LÍQUIDO) passam sem anonimizar.</td></tr>
+      <tr><td>Documentos (DOCX/TXT)</td><td><span class="tag tag-fail">REPROVADO</span></td>
+          <td>55/100</td><td>2 vazamentos detectados. Regex não captura nomes com honoríficos (Dra.) nem ALL-CAPS.</td></tr>
+      <tr><td>PDFs</td><td><span class="tag tag-warn">ATENÇÃO</span></td>
+          <td>60/100</td><td>PDFs escaneados (imagem) não são processados. Default de 3 páginas é muito agressivo.</td></tr>
+      <tr><td>Apresentações (PPTX)</td><td><span class="tag tag-pass">APROVADO</span></td>
+          <td>72/100</td><td>Texto principal OK. Gráficos, SmartArt e caixas de texto flutuantes não são extraídos.</td></tr>
+      <tr><td>Emails (EML/MSG)</td><td><span class="tag tag-warn">ATENÇÃO</span></td>
+          <td>65/100</td><td>Campos OK. Conteúdo de anexos é completamente ignorado.</td></tr>
+      <tr><td>Interface (psa.py)</td><td><span class="tag tag-warn">ATENÇÃO</span></td>
+          <td>60/100</td><td>_check_protected nunca é chamada. Pasta data/maps/ não é bloqueada para processamento.</td></tr>
+      <tr><td>Mapas (data/maps/)</td><td><span class="tag tag-pass">APROVADO</span></td>
+          <td>85/100</td><td>18/18 mapas completos e pareados com arquivos anonimizados. Inconsistência em paths (absoluto vs relativo).</td></tr>
+      <tr><td>Logs</td><td><span class="tag tag-warn">ATENÇÃO</span></td>
+          <td>55/100</td><td>Logs contêm trechos de dados originais (remetente de email, exemplos de entidades). Não são tratados como protegidos.</td></tr>
+      <tr><td>CLAUDE.md (Protocolo)</td><td><span class="tag tag-warn">ATENÇÃO</span></td>
+          <td>65/100</td><td>Cobre o fluxo principal mas falta: encoding, separador, colunas não detectadas, segurança de logs, contradição Seção 4 vs 5.</td></tr>
+    </tbody>
+  </table></div>
+</div>
+
+<!-- ======================================================================
+     SEÇÃO 2: AUDITORIA DE LOGS
+     ====================================================================== -->
+<div class="section">
+  <h2><span class="snum">2</span> Auditoria de Logs</h2>
+
+  <p style="color:var(--muted);margin-bottom:16px">Arquivos analisados: <code>logs/psa_guardiao.log</code> (377 linhas) e <code>logs/operacao_20260309_155221.json</code></p>
+
+  <div class="table-wrap"><table>
+    <thead><tr><th>Verificação</th><th>Status</th><th>Detalhe</th></tr></thead>
+    <tbody>
+      <tr><td>Log de operação (JSON)</td><td><span class="tag tag-pass">OK</span></td>
+          <td>Registra 5 arquivos processados, todos com status "ok". Paths de entrada e saída corretos.</td></tr>
+      <tr><td>Pareamento anon↔map</td><td><span class="tag tag-pass">OK</span></td>
+          <td>Cada arquivo anonimizado tem um mapa correspondente. 18 pares verificados.</td></tr>
+      <tr><td>Erros registrados</td><td><span class="tag tag-warn">ATENÇÃO</span></td>
+          <td>2 erros de encoding no log (utf-8 falhou antes do fix para latin-1). Comportamento esperado.</td></tr>
+      <tr><td>Validação de segurança</td><td><span class="tag tag-pass">OK</span></td>
+          <td>remuneracao202506.csv: "Validação de segurança: PASSOU — nenhum vazamento detectado."</td></tr>
+      <tr><td>PII nos logs</td><td><span class="tag tag-fail">FALHA</span></td>
+          <td>Logs contêm remetente real de email e trechos de entidades originais (truncados a 40 chars). <strong>Logs deveriam ser tratados como protegidos.</strong></td></tr>
+      <tr><td>Log da pasta inteira</td><td><span class="tag tag-pass">OK</span></td>
+          <td>Processamento em lote registrado corretamente: 5/5 sucesso, 0 erros.</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>Operações de anonimização registradas</h3>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Arquivo Original</th><th>Formato</th><th>Execuções</th><th>Última</th><th>Status</th></tr></thead>
+    <tbody>
+      <tr><td>remuneracao202506.csv</td><td>CSV (latin-1, ;)</td><td>3 (2 falharam)</td><td>16:06:24</td><td><span class="tag tag-pass">OK</span></td></tr>
+      <tr><td>teste_clientes.xlsx</td><td>XLSX</td><td>4</td><td>15:52:21</td><td><span class="tag tag-pass">OK</span></td></tr>
+      <tr><td>teste_contrato.txt</td><td>TXT</td><td>4</td><td>15:52:21</td><td><span class="tag tag-fail">VAZAMENTO</span></td></tr>
+      <tr><td>teste_relatorio.docx</td><td>DOCX</td><td>3</td><td>15:52:21</td><td><span class="tag tag-fail">VAZAMENTO</span></td></tr>
+      <tr><td>teste_apresentacao.pptx</td><td>PPTX</td><td>4</td><td>15:52:20</td><td><span class="tag tag-pass">OK</span></td></tr>
+      <tr><td>teste_proposta.eml</td><td>EML</td><td>2</td><td>15:52:21</td><td><span class="tag tag-pass">OK</span></td></tr>
+    </tbody>
+  </table></div>
+</div>
+
+<!-- ======================================================================
+     SEÇÃO 3: VERIFICAÇÃO DE VAZAMENTOS
+     ====================================================================== -->
+<div class="section">
+  <h2><span class="snum">3</span> Verificação de Vazamentos</h2>
+
+  <div class="alert alert-red">
+    <strong>🔴 2 VAZAMENTOS DETECTADOS</strong> em arquivos de texto anonimizados. Os nomes vazados são dados de teste
+    gerados pelo Faker (não PII real), porém a vulnerabilidade é real: se um documento real contiver nomes com
+    honoríficos ou nomes incomuns, esses dados passarão sem anonimização.
+  </div>
+
+  <div class="table-wrap"><table>
+    <thead><tr><th>Arquivo Anonimizado</th><th>Original</th><th>Status</th><th>Detalhes</th></tr></thead>
+    <tbody>
+      <tr>
+        <td class="mono" style="font-size:11px">anon_remuneracao202506_*.csv</td>
+        <td>remuneracao202506.csv</td>
+        <td><span class="tag tag-pass">LIMPO</span></td>
+        <td>100 linhas amostradas. Nomes substituídos por Faker (ex: "Brenda Alves"). CPFs sintéticos. Nenhum nome real detectado no cruzamento com 200 nomes originais.</td>
+      </tr>
+      <tr>
+        <td class="mono" style="font-size:11px">anon_teste_clientes_*.xlsx</td>
+        <td>teste_clientes.xlsx</td>
+        <td><span class="tag tag-pass">LIMPO</span></td>
+        <td>50 linhas. Colunas renomeadas (COL_A–COL_N). Nomes, CPFs, emails, telefones, endereços substituídos. Emails usam domínios @example.com/net/org (seguros).</td>
+      </tr>
+      <tr style="background:#1c0a0a">
+        <td class="mono" style="font-size:11px;color:#fca5a5">anon_teste_contrato_*155221.txt</td>
+        <td>teste_contrato.txt</td>
+        <td><span class="tag tag-fail">VAZAMENTO</span></td>
+        <td><strong>"Bryan da Costa"</strong> aparece não-tokenizado na cláusula 4 (2 ocorrências). Todos os outros nomes foram corretamente substituídos por [PESSOA_N]. <em>Causa provável: nome "Bryan" não reconhecido pelo regex de nomes brasileiros.</em></td>
+      </tr>
+      <tr style="background:#1c0a0a">
+        <td class="mono" style="font-size:11px;color:#fca5a5">anon_teste_relatorio_*155221.txt</td>
+        <td>teste_relatorio.docx</td>
+        <td><span class="tag tag-fail">VAZAMENTO</span></td>
+        <td><strong>"Dra. Olivia da Cruz"</strong> aparece não-tokenizado na cláusula 6 (2 ocorrências). <em>Causa provável: prefixo "Dra." impede o regex de reconhecer o nome que segue.</em></td>
+      </tr>
+      <tr>
+        <td class="mono" style="font-size:11px">anon_teste_apresentacao_*.json</td>
+        <td>teste_apresentacao.pptx</td>
+        <td><span class="tag tag-pass">LIMPO</span></td>
+        <td>5 slides processados. 13 tokens [PESSOA_N]. CPFs e emails substituídos. Nenhum vazamento.</td>
+      </tr>
+      <tr>
+        <td class="mono" style="font-size:11px">anon_teste_proposta_*.txt</td>
+        <td>teste_proposta.eml</td>
+        <td><span class="tag tag-pass">LIMPO</span></td>
+        <td>Campos From/To/CC anonimizados. 7 tokens [PESSOA_N]. Emails @example.org. Nenhum vazamento.</td>
+      </tr>
+    </tbody>
+  </table></div>
+
+  <h3>Cruzamento detalhado — remuneracao202506.csv</h3>
+  <div class="alert alert-green">
+    <strong>Cruzamento APROVADO.</strong> 200 nomes reais do arquivo original foram testados contra os 100 nomes
+    do arquivo anonimizado: <strong>0 correspondências</strong>. CPFs reais cruzados: <strong>0 correspondências</strong>.
+    Os valores financeiros nas colunas não-anonimizadas (BRUTO, LÍQUIDO) são valores reais — este é um risco aceito
+    pois a coluna NOME foi removida, mas as colunas ÓRGÃO e CARGO combinadas com o valor podem permitir
+    re-identificação em datasets pequenos.
+  </div>
+</div>
+
+<!-- ======================================================================
+     SEÇÃO 4: ANÁLISE DOS MAPAS
+     ====================================================================== -->
+<div class="section">
+  <h2><span class="snum">4</span> Análise dos Mapas de Correspondência</h2>
+
+  <div class="table-wrap"><table>
+    <thead><tr><th>Verificação</th><th>Status</th><th>Detalhe</th></tr></thead>
+    <tbody>
+      <tr><td>Estrutura JSON</td><td><span class="tag tag-pass">OK</span></td>
+          <td>Todos os 18 mapas possuem JSON válido.</td></tr>
+      <tr><td>Pareamento 1:1</td><td><span class="tag tag-pass">OK</span></td>
+          <td>18 mapas ↔ 18 arquivos anonimizados. Nenhum órfão em nenhuma direção.</td></tr>
+      <tr><td>Referências a originais</td><td><span class="tag tag-pass">OK</span></td>
+          <td>Todos os arquivo_original referenciados existem em data/real/.</td></tr>
+      <tr><td>Referências a anonimizados</td><td><span class="tag tag-pass">OK</span></td>
+          <td>Todos os arquivo_anonimizado referenciados existem em data/anonymized/.</td></tr>
+      <tr><td>Paths consistentes</td><td><span class="tag tag-warn">ATENÇÃO</span></td>
+          <td>Mapas antes de 15:50 usam paths absolutos; após 15:50 usam relativos. Mistura de formatos.</td></tr>
+      <tr><td>Estatísticas de entidades</td><td><span class="tag tag-warn">ATENÇÃO</span></td>
+          <td><code>empresas_substituidas</code> é 0 em todos os 18 mapas, mesmo quando CNPJs foram substituídos. Bug no contador.</td></tr>
+      <tr><td>Mapa contrato_151934</td><td><span class="tag tag-warn">ANOMALIA</span></td>
+          <td>0 entidades detectadas, 0 parágrafos na amostra. Execução parcial/falhada mas arquivo salvo.</td></tr>
+      <tr><td>Falso positivo "cargo"→"rg"</td><td><span class="tag tag-warn">CORRIGIDO</span></td>
+          <td>Mapa _150250 marcou coluna "cargo" como tipo_sensivel="rg". Corrigido em execuções posteriores.</td></tr>
+      <tr><td>Segurança dos mapas</td><td><span class="tag tag-high">RISCO</span></td>
+          <td>Mapas contêm o mapeamento completo original↔fake em texto claro. Acesso ao mapa = de-anonimização total.</td></tr>
+    </tbody>
+  </table></div>
+</div>
+
+<!-- ======================================================================
+     SEÇÃO 5: REVISÃO DO CLAUDE.md
+     ====================================================================== -->
+<div class="section">
+  <h2><span class="snum">5</span> Revisão do Protocolo (CLAUDE.md)</h2>
+
+  <div class="table-wrap"><table>
+    <thead><tr><th>Cenário</th><th>Coberto?</th><th>Recomendação</th></tr></thead>
+    <tbody>
+      <tr><td>Encoding não-UTF-8 (latin-1, cp1252)</td>
+          <td><span class="tag tag-fail">NÃO</span></td>
+          <td>Adicionar nota: "CSVs brasileiros frequentemente usam latin-1 ou cp1252. O PSA detecta automaticamente."</td></tr>
+      <tr><td>Separador não-vírgula (;, \t, |)</td>
+          <td><span class="tag tag-fail">NÃO</span></td>
+          <td>Adicionar nota: "Separadores são detectados automaticamente. Dados do GDF usam ';'."</td></tr>
+      <tr><td>Arquivos grandes (>100k linhas)</td>
+          <td><span class="tag tag-warn">PARCIAL</span></td>
+          <td>Flag --sample documentado, mas falta orientação sobre tamanho recomendado vs propósito da análise.</td></tr>
+      <tr><td>CPF pré-mascarado (***XXX***)</td>
+          <td><span class="tag tag-fail">NÃO</span></td>
+          <td>Adicionar nota sobre dados públicos com CPF já mascarado e uso de NOME como identificador.</td></tr>
+      <tr><td>Colunas não detectadas como sensíveis</td>
+          <td><span class="tag tag-fail">NÃO</span></td>
+          <td>Listar: BRUTO, LÍQUIDO, BENEFÍCIOS, etc. passam sem anonimização. Adicionar aviso sobre colunas financeiras.</td></tr>
+      <tr><td>Segurança dos logs</td>
+          <td><span class="tag tag-fail">NÃO</span></td>
+          <td>Logs contêm PII truncados. Deveriam ser classificados como PROTEGIDOS, não apenas "writable".</td></tr>
+      <tr><td>Contradição Seção 4 vs Seção 5</td>
+          <td><span class="tag tag-fail">CONFLITO</span></td>
+          <td>Seção 4 diz "Leia o mapa em data/maps/" mas Seção 5 proíbe ler data/maps/. Resolver contradição.</td></tr>
+      <tr><td>Limpeza de execuções antigas</td>
+          <td><span class="tag tag-fail">NÃO</span></td>
+          <td>4 versões de cada arquivo de teste. Sem orientação de cleanup ou qual versão preferir.</td></tr>
+      <tr><td>Fluxo principal (anonimização → análise)</td>
+          <td><span class="tag tag-pass">SIM</span></td>
+          <td>Bem documentado com exemplos e checklist.</td></tr>
+      <tr><td>Formatos suportados</td>
+          <td><span class="tag tag-pass">SIM</span></td>
+          <td>Todos os 8 formatos listados com comandos de exemplo.</td></tr>
+      <tr><td>Diretórios protegidos</td>
+          <td><span class="tag tag-pass">SIM</span></td>
+          <td>data/real/, data/samples/, data/maps/ claramente marcados como protegidos.</td></tr>
+    </tbody>
+  </table></div>
+</div>
+
+<!-- ======================================================================
+     SEÇÃO 6: VULNERABILIDADES NOS SCRIPTS
+     ====================================================================== -->
+<div class="section">
+  <h2><span class="snum">6</span> Vulnerabilidades nos Scripts</h2>
+
+  <h3>Vulnerabilidades Críticas (3)</h3>
+  <div class="table-wrap"><table>
+    <thead><tr><th>ID</th><th>Script</th><th>Vulnerabilidade</th><th>Impacto</th></tr></thead>
+    <tbody>
+      <tr><td><span class="tag tag-critical">C-01</span></td>
+          <td class="mono">anonymizer.py</td>
+          <td><strong>Validação detecta vazamento mas NÃO bloqueia a saída.</strong> A função <code>_validate_no_leakage</code> apenas loga um warning — o arquivo anonimizado é salvo e retornado mesmo com dados reais presentes.</td>
+          <td>Dados reais podem ser escritos em data/anonymized/ e tratados como "seguros".</td></tr>
+      <tr><td><span class="tag tag-critical">C-02</span></td>
+          <td class="mono">anonymizer.py</td>
+          <td><strong>Colunas não-sensíveis passam com dados reais intactos.</strong> Qualquer coluna cujo nome não casa com a detecção de sensibilidade mantém valores originais verbatim (ÓRGÃO, CARGO, BRUTO, LÍQUIDO, etc.).</td>
+          <td>Dados financeiros reais + ÓRGÃO + CARGO podem permitir re-identificação.</td></tr>
+      <tr><td><span class="tag tag-critical">C-03</span></td>
+          <td class="mono">text_engine.py</td>
+          <td><strong>Regex de nomes falha com ALL-CAPS e honoríficos.</strong> Nomes em maiúsculas ("MARCOS ANTÔNIO DA SILVA") e nomes com "Dr.", "Dra.", "Sr.", "Sra.", "Prof." não são detectados.</td>
+          <td>Nomes reais passam sem anonimização em documentos de texto. <em>Confirmado: 2 vazamentos encontrados.</em></td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>Vulnerabilidades Altas (10)</h3>
+  <div class="table-wrap"><table>
+    <thead><tr><th>ID</th><th>Script</th><th>Vulnerabilidade</th></tr></thead>
+    <tbody>
+      <tr><td><span class="tag tag-high">H-01</span></td><td class="mono">anonymizer.py</td>
+          <td><strong>Keywords sensíveis ausentes:</strong> titulo_eleitor, pis, pasep, nis, ctps, sus, passaporte, placa, chassi, renavam, nome_mae, nome_pai, latitude, longitude.</td></tr>
+      <tr><td><span class="tag tag-high">H-02</span></td><td class="mono">anonymizer.py</td>
+          <td><strong>Guard de 4 chars no match parcial:</strong> colunas "num_rg", "rg_cliente", "tel_residencial" não são detectadas porque "rg" e "tel" têm &lt;4 chars.</td></tr>
+      <tr><td><span class="tag tag-high">H-03</span></td><td class="mono">anonymizer.py</td>
+          <td><strong>Validação ignora valores ≤3 chars:</strong> UF, códigos bancários e idades passam silenciosamente.</td></tr>
+      <tr><td><span class="tag tag-high">H-04</span></td><td class="mono">text_engine.py</td>
+          <td><strong>Sem regex para RG, Título de Eleitor, PIS/PASEP/NIS, CTPS, CNH</strong> em texto livre.</td></tr>
+      <tr><td><span class="tag tag-high">H-05</span></td><td class="mono">text_engine.py</td>
+          <td><strong>Endereços não são anonimizados:</strong> apenas CEP é detectado. Rua, número, bairro, cidade passam em claro.</td></tr>
+      <tr><td><span class="tag tag-high">H-06</span></td><td class="mono">anonymize_document.py</td>
+          <td><strong>TXT assume UTF-8:</strong> arquivos latin-1/cp1252 terão caracteres corrompidos, impedindo detecção de nomes acentuados.</td></tr>
+      <tr><td><span class="tag tag-high">H-07</span></td><td class="mono">anonymize_email.py</td>
+          <td><strong>Anexos de email são ignorados:</strong> apenas o nome do anexo é tokenizado. O conteúdo (planilhas, PDFs) nunca é processado.</td></tr>
+      <tr><td><span class="tag tag-high">H-08</span></td><td class="mono">psa.py</td>
+          <td><strong>_security_check não é chamada no modo pasta:</strong> processamento em batch bypass a verificação.</td></tr>
+      <tr><td><span class="tag tag-high">H-09</span></td><td class="mono">psa.py</td>
+          <td><strong>Sem proteção para data/maps/ e data/samples/:</strong> _security_check só bloqueia data/anonymized/. Um usuário pode processar mapas acidentalmente.</td></tr>
+      <tr><td><span class="tag tag-high">H-10</span></td><td class="mono">psa.py</td>
+          <td><strong>_check_protected está definida mas nunca é chamada:</strong> código morto — check de segurança implementado mas esquecido.</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>Vulnerabilidades Médias (16)</h3>
+  <div class="table-wrap"><table>
+    <thead><tr><th>ID</th><th>Script</th><th>Descrição</th></tr></thead>
+    <tbody>
+      <tr><td><span class="tag tag-medium">M-01</span></td><td class="mono">anonymizer.py</td><td>Faker.seed(42) fixo → outputs determinísticos e potencialmente reversíveis.</td></tr>
+      <tr><td><span class="tag tag-medium">M-02</span></td><td class="mono">anonymizer.py</td><td>MD5 para cache keys — colisões possíveis em datasets grandes.</td></tr>
+      <tr><td><span class="tag tag-medium">M-03</span></td><td class="mono">anonymizer.py</td><td>CSV com coluna única rejeitado silenciosamente (lista de CPFs).</td></tr>
+      <tr><td><span class="tag tag-medium">M-04</span></td><td class="mono">text_engine.py</td><td>_NOT_A_NAME incompleto: faltam estados, instituições, países.</td></tr>
+      <tr><td><span class="tag tag-medium">M-05</span></td><td class="mono">text_engine.py</td><td>Regex monetário não captura "R$1.234" (sem centavos), valores negativos.</td></tr>
+      <tr><td><span class="tag tag-medium">M-06</span></td><td class="mono">text_engine.py</td><td>Regex de datas não captura ISO 8601 (2024-01-15), mês/ano.</td></tr>
+      <tr><td><span class="tag tag-medium">M-07</span></td><td class="mono">text_engine.py</td><td>entity_map armazena valores originais em texto claro no JSON.</td></tr>
+      <tr><td><span class="tag tag-medium">M-08</span></td><td class="mono">anonymize_document.py</td><td>DOCX: headers, footers e text boxes não extraídos.</td></tr>
+      <tr><td><span class="tag tag-medium">M-09</span></td><td class="mono">anonymize_document.py</td><td>Amostragem 40/40/20 pode pular seções com PII.</td></tr>
+      <tr><td><span class="tag tag-medium">M-10</span></td><td class="mono">anonymize_pdf.py</td><td>Default de 3 páginas: 94% de um documento de 50 páginas é ignorado.</td></tr>
+      <tr><td><span class="tag tag-medium">M-11</span></td><td class="mono">anonymize_pdf.py</td><td>Tabelas com erro silencioso (except: pass). Dados tabulares podem ser perdidos.</td></tr>
+      <tr><td><span class="tag tag-medium">M-12</span></td><td class="mono">anonymize_pdf.py</td><td>PDFs escaneados produzem texto vazio sem aviso. Zero anonimização em imagens.</td></tr>
+      <tr><td><span class="tag tag-medium">M-13</span></td><td class="mono">anonymize_presentation.py</td><td>Gráficos, SmartArt e caixas flutuantes não são extraídos.</td></tr>
+      <tr><td><span class="tag tag-medium">M-14</span></td><td class="mono">anonymize_email.py</td><td>Decodificação HTML incompleta (entidades numéricas, caracteres acentuados).</td></tr>
+      <tr><td><span class="tag tag-medium">M-15</span></td><td class="mono">psa.py</td><td>Processamento de pasta não é recursivo. Subpastas são ignoradas.</td></tr>
+      <tr><td><span class="tag tag-medium">M-16</span></td><td class="mono">psa.py</td><td>Sem verificação de integridade (checksum) nos arquivos de saída.</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>Vulnerabilidades Baixas (6)</h3>
+  <div class="table-wrap"><table>
+    <thead><tr><th>ID</th><th>Script</th><th>Descrição</th></tr></thead>
+    <tbody>
+      <tr><td><span class="tag tag-low">L-01</span></td><td class="mono">anonymizer.py</td><td>dict[str, str] e str|None: sintaxe Python 3.10+ usada em script para Python 3.9.</td></tr>
+      <tr><td><span class="tag tag-low">L-02</span></td><td class="mono">text_engine.py</td><td>Regex de telefone não captura ramais e formatos internacionais.</td></tr>
+      <tr><td><span class="tag tag-low">L-03</span></td><td class="mono">anonymize_document.py</td><td>Log imprime original[:40] — dados reais truncados no arquivo de log.</td></tr>
+      <tr><td><span class="tag tag-low">L-04</span></td><td class="mono">anonymize_email.py</td><td>Log imprime remetente e assunto reais antes da anonimização.</td></tr>
+      <tr><td><span class="tag tag-low">L-05</span></td><td class="mono">anonymize_presentation.py</td><td>Campo author com nome único (1 palavra) não é anonimizado.</td></tr>
+      <tr><td><span class="tag tag-low">L-06</span></td><td class="mono">psa.py</td><td>Processamento em pasta ignora subdiretórios (não recursivo).</td></tr>
+    </tbody>
+  </table></div>
+</div>
+
+<!-- ======================================================================
+     SEÇÃO 7: RECOMENDAÇÕES PRIORITÁRIAS
+     ====================================================================== -->
+<div class="section">
+  <h2><span class="snum">7</span> Recomendações Prioritárias</h2>
+
+  <div class="alert alert-red">
+    <strong>PRIORIDADE IMEDIATA — Corrigir antes de usar com dados reais em documentos:</strong>
+  </div>
+
+  <ol class="rec-list">
+    <li><strong>[C-01] Bloquear saída quando houver vazamento.</strong> Modificar <code>_validate_no_leakage</code> em <code>anonymizer.py</code> para lançar exceção e NÃO salvar o arquivo quando detectar dados reais no output.</li>
+    <li><strong>[C-03] Corrigir regex de nomes no text_engine.py.</strong> Adicionar suporte a: (a) nomes em ALL-CAPS (<code>[A-Z]{2,}</code> sequences), (b) honoríficos (Dr., Dra., Sr., Sra., Prof., Eng., Arq.) como prefixos opcionais, (c) "Filho", "Junior", "Neto", "Sobrinho" na lista de partículas.</li>
+    <li><strong>[C-02] Aplicar text_engine nas colunas não-sensíveis de planilhas.</strong> Ou, no mínimo, escanear colunas "observações", "descrição", "comentário", "motivo" com o regex de PII antes de passá-las adiante.</li>
+    <li><strong>[H-08/H-09/H-10] Ativar _check_protected no psa.py.</strong> Chamar em modo pasta e estender para bloquear data/maps/ e data/samples/.</li>
+    <li><strong>[H-04/H-05] Adicionar regex para RG, PIS/PASEP, Título, endereços</strong> no text_engine.py.</li>
+    <li><strong>[H-06] Adicionar fallback de encoding no anonymize_document.py</strong> para TXT (mesma lógica do anonymizer.py: tentar utf-8, latin-1, cp1252).</li>
+    <li><strong>[H-07] Processar ou avisar sobre anexos de email.</strong> Pelo menos exibir warning claro: "⚠ N anexos ignorados — processe-os separadamente com psa.py".</li>
+    <li><strong>CLAUDE.md: resolver contradição Seção 4 ↔ Seção 5</strong> (mapa pode ser lido para entender a estrutura, mas conteúdo original NÃO pode ser exibido).</li>
+    <li><strong>CLAUDE.md: adicionar seções sobre encoding, separadores, colunas não detectadas, segurança de logs.</strong></li>
+    <li><strong>Classificar logs/ como PROTEGIDO</strong> no CLAUDE.md e em psa.py.</li>
+  </ol>
+</div>
+
+<!-- ======================================================================
+     SEÇÃO 8: SCORE DETALHADO
+     ====================================================================== -->
+<div class="section">
+  <h2><span class="snum">8</span> Cálculo do Score</h2>
+
+  <div class="table-wrap"><table>
+    <thead><tr><th>Critério</th><th>Peso</th><th>Score</th><th>Justificativa</th></tr></thead>
+    <tbody>
+      <tr><td>Pipeline funcional (CSV/XLSX)</td><td>25%</td><td>20/25</td><td>Funciona. Detecta 5/27 colunas sensíveis no remuneracao.</td></tr>
+      <tr><td>Pipeline de texto (DOCX/TXT/PDF/PPTX/EML)</td><td>20%</td><td>12/20</td><td>2 vazamentos confirmados. Regex incompleto.</td></tr>
+      <tr><td>Integridade dos mapas</td><td>10%</td><td>8/10</td><td>18/18 pareados. Bug no contador de empresas. Paths inconsistentes.</td></tr>
+      <tr><td>Validação de segurança</td><td>15%</td><td>5/15</td><td>Existe mas não bloqueia saída. _check_protected nunca chamada.</td></tr>
+      <tr><td>Protocolo (CLAUDE.md)</td><td>10%</td><td>6/10</td><td>Fluxo principal OK. 7 gaps identificados, 1 contradição.</td></tr>
+      <tr><td>Cobertura de PII</td><td>10%</td><td>5/10</td><td>Nome, CPF, email, telefone, CEP, CNPJ cobertos. RG, PIS, Título, endereço ausentes.</td></tr>
+      <tr><td>Logs e auditabilidade</td><td>5%</td><td>3/5</td><td>Logs presentes mas contêm PII. Sem política de retenção.</td></tr>
+      <tr><td>Robustez (encoding, formatos, erros)</td><td>5%</td><td>3/5</td><td>CSV multi-encoding OK após fix. TXT ainda assume UTF-8.</td></tr>
+      <tr style="background:var(--navy3);font-weight:600">
+        <td>TOTAL</td><td>100%</td><td style="color:var(--orange);font-size:18px">62/100</td>
+        <td><strong>REPROVADO — CONDICIONAL</strong></td></tr>
+    </tbody>
+  </table></div>
+
+  <div class="alert alert-blue">
+    <strong>Nota:</strong> O score de 62/100 reflete o estado atual do PSA como ferramenta de proteção de dados.
+    O sistema demonstra competência no cenário principal (planilhas com dados tabulares) mas precisa de hardening
+    significativo na camada de texto livre. Com a implementação das 10 recomendações prioritárias, o score
+    estimado subiria para <strong>85-90/100</strong>.
+  </div>
+</div>
+
+</div><!-- /container -->
+
+<div class="footer">
+  🔒 Auditoria de Segurança — PSA Privacy Shield Agent &nbsp;·&nbsp;
+  Gerada em 10/03/2026 &nbsp;·&nbsp;
+  Auditor: Claude (PSA Comandante) &nbsp;·&nbsp;
+  35 vulnerabilidades catalogadas &nbsp;·&nbsp;
+  18 arquivos verificados &nbsp;·&nbsp;
+  6 scripts revisados
+</div>
+</body>
+</html>

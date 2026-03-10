@@ -1,0 +1,48 @@
+# === PSA — Diretórios protegidos (NUNCA subir) ===
+# Ignora tudo dentro, mas preserva a estrutura via .gitkeep
+data/real/*
+!data/real/.gitkeep
+data/maps/*
+!data/maps/.gitkeep
+data/samples/*
+!data/samples/.gitkeep
+data/anonymized/*
+!data/anonymized/.gitkeep
+logs/*
+!logs/.gitkeep
+
+# === Python ===
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+*.egg-info/
+dist/
+build/
+*.egg
+.eggs/
+
+# === Ambientes virtuais ===
+venv/
+.venv/
+env/
+.env
+
+# === IDE ===
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# === Claude Code ===
+.claude/
+
+# === Documentos locais (não publicar) ===
+Documentação Histórica/
+PSA-Resumo-Projeto Chat*.md
+
+# === Resultados locais (gerados por análises) ===
+results/analise_remuneracao_gdf.html
+results/folha_por_orgao_202506.xlsx
