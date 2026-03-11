@@ -1,0 +1,57 @@
+{
+  "crefito": {
+    "descricao": "Registro profissional no Conselho Regional de Fisioterapia e Terapia Ocupacional",
+    "regex": "CREFITO[\\s-]*\\d{1,2}/\\d{4,8}-[A-Z]",
+    "sensivel": true,
+    "base_legal": "Art. 5°, I LGPD — dado pessoal identificável",
+    "tipo_psa": "id_number",
+    "confianca": 0.95,
+    "aprendido_em": "2026-03-11",
+    "tipo_documento": "medico",
+    "tokens_gastos": 713
+  },
+  "rqe": {
+    "descricao": "Registro de Qualificação de Especialista — número que identifica a especialidade médica do profissional",
+    "regex": "RQE[\\s:]*\\d{3,6}",
+    "sensivel": true,
+    "base_legal": "Art. 5°, I LGPD — dado pessoal identificável",
+    "tipo_psa": "id_number",
+    "confianca": 0.92,
+    "aprendido_em": "2026-03-11",
+    "tipo_documento": "medico",
+    "tokens_gastos": 713
+  },
+  "num_carteirinha_plano": {
+    "descricao": "Número da carteirinha do plano de saúde — identificador único do beneficiário",
+    "regex": "\\d{4}\\.\\d{4}\\.\\d{4}\\.\\d{4}",
+    "sensivel": true,
+    "base_legal": "Art. 5°, II e Art. 11 LGPD — dado sensível vinculado a saúde",
+    "tipo_psa": "id_number",
+    "confianca": 0.9,
+    "aprendido_em": "2026-03-11",
+    "tipo_documento": "medico",
+    "tokens_gastos": 713
+  },
+  "protocolo_atd": {
+    "descricao": "Protocolo de atendimento médico — código sequencial da consulta",
+    "regex": "ATD-\\d{4}-\\d{4,8}",
+    "sensivel": true,
+    "base_legal": "Art. 5°, I LGPD — dado pessoal identificável",
+    "tipo_psa": "id_number",
+    "confianca": 0.85,
+    "aprendido_em": "2026-03-11",
+    "tipo_documento": "medico",
+    "tokens_gastos": 713
+  },
+  "cid10": {
+    "descricao": "Código da Classificação Internacional de Doenças (CID-10) — identifica diagnóstico médico",
+    "regex": "[A-Z]\\d{2}(?:\\.\\d{1,2})?",
+    "sensivel": true,
+    "base_legal": "Art. 11 LGPD — dado sensível de saúde",
+    "tipo_psa": "id_number",
+    "confianca": 0.98,
+    "aprendido_em": "2026-03-11",
+    "tipo_documento": "medico",
+    "tokens_gastos": 713
+  }
+}

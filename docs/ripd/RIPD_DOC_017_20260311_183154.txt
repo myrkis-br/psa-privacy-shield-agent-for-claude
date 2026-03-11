@@ -1,0 +1,57 @@
+============================================================
+RELATÓRIO DE IMPACTO À PROTEÇÃO DE DADOS PESSOAIS (RIPD)
+PSA — Privacy Shield Agent v6.0
+Gerado em: 11/03/2026 18:31:54
+Base legal: Art. 38 LGPD + Resolução ANPD nº 4/2023
+============================================================
+
+1. IDENTIFICAÇÃO DO DOCUMENTO
+----------------------------------------
+   Código PSA:        DOC_017
+   Arquivo:           bacen_cadastro_202401.csv
+   Tipo:              planilha
+   Subtipo:           cadastro_funcionarios
+   Titulares estim.:  4.560 pessoas
+
+2. CLASSIFICAÇÃO DE RISCO
+----------------------------------------
+   Risk Score:        5/10
+   Classificação:     MÉDIA
+   Dado sensível:     NÃO
+   Categorias:        cadastral, profissional
+   RIPD obrigatório:  NÃO
+   Cobertura:         anonimização completa + RIPD recomendado
+   Justificativa:     dado cadastral (CPF/RG/endereço): +1 | dado profissional (cargo/função/lotação): +1 | volume (4560 titulares): +2 | cadastro funcional em volume (cadastro_funcionarios): +1
+
+3. ECONOMIA E EFICIÊNCIA
+----------------------------------------
+   Tokens originais:  95.000
+   Tokens anonimiz.:  4.200
+   Economia:          95.6%
+   Custo sem PSA:     R$ 4,75
+   Custo com PSA:     R$ 0,21
+   Economia por doc:  R$ 4,54
+
+4. SEGURANÇA DA ANONIMIZAÇÃO
+----------------------------------------
+   Entidades anon.:   180
+   Dados vazados:     0 ✓ SEGURO
+   Padrões novos:     0
+
+5. PROTEÇÃO FINANCEIRA
+----------------------------------------
+   Classificação:     MÉDIA
+   Multa evitada:     R$ 50.000 – R$ 500.000
+   Base legal:        Art. 52 LGPD + Res. ANPD nº 4/2023
+
+6. CONCLUSÃO
+----------------------------------------
+   Este documento apresenta RISCO MÉDIO à proteção de dados
+   pessoais. Recomenda-se anonimização completa e a
+   elaboração de RIPD como boa prática.
+
+============================================================
+PSA — Privacy Shield Agent v6.0
+Este relatório foi gerado automaticamente e não substitui
+a análise do encarregado de proteção de dados (DPO).
+============================================================

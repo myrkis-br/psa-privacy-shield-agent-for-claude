@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PSA — Calculadora de Impacto</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Segoe UI',sans-serif;background:#0D1B2A;color:#E8EDF2;min-height:100vh}
+  .hero{background:linear-gradient(135deg,#0D1B2A,#1B2A3B);padding:44px 20px 32px;text-align:center;border-bottom:2px solid #C0392B}
+  .hero-icon{font-size:3.2rem;margin-bottom:8px}
+  .hero h1{font-size:2.1rem;color:#E74C3C;margin-bottom:8px;line-height:1.2}
+  .hero h1 span{color:#D4AC0D}
+  .hero p{color:#AEC6CF;font-size:.98rem;max-width:640px;margin:0 auto 14px;line-height:1.6}
+  .badges{margin-top:8px}
+  .badge{display:inline-block;padding:5px 14px;border-radius:20px;font-size:.8rem;font-weight:600;margin:3px}
+  .b-red{background:#C0392B;color:white}
+  .b-gold{background:#7D6608;color:white}
+  .b-green{background:#1E8449;color:white}
+  .b-blue{background:#1B4F72;color:white}
+  .container{max-width:980px;margin:0 auto;padding:28px 20px}
+  .callout{border-radius:10px;padding:14px 20px;margin-bottom:10px;font-size:.98rem;font-weight:600;text-align:center;line-height:1.5}
+  .c-red  {background:linear-gradient(90deg,#7B241C,#C0392B);color:white;border-left:5px solid #E74C3C}
+  .c-green{background:linear-gradient(90deg,#1E8449,#27AE60);color:white}
+  .c-blue {background:linear-gradient(90deg,#1B4F72,#2E86C1);color:white}
+  .c-gold {background:linear-gradient(90deg,#7D6608,#D4AC0D);color:#0D1B2A}
+  .tabs{display:flex;gap:6px;margin:26px 0 0;flex-wrap:wrap}
+  .tab{flex:1;min-width:100px;padding:11px 8px;border-radius:10px 10px 0 0;cursor:pointer;font-weight:700;font-size:.82rem;text-align:center;border:1px solid #2E4A6B;border-bottom:none;background:#162333;color:#7F8C8D;transition:all .2s}
+  .tab.active{background:#1B2A3B;border-bottom:1px solid #1B2A3B}
+  .t-seg.active{color:#E74C3C;border-color:#E74C3C}
+  .t-am.active {color:#27AE60;border-color:#27AE60}
+  .t-tok.active{color:#D4AC0D;border-color:#D4AC0D}
+  .t-tem.active{color:#5DADE2;border-color:#5DADE2}
+  .t-pit.active{color:#27AE60;border-color:#27AE60}
+  .tab-panel{display:none;background:#1B2A3B;border:1px solid #2E4A6B;border-radius:0 0 12px 12px;padding:24px}
+  .tab-panel.active{display:block}
+  .calc-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  @media(max-width:600px){.calc-grid{grid-template-columns:1fr}}
+  label{font-size:.82rem;color:#AEC6CF;display:block;margin-bottom:5px}
+  input[type=range]{width:100%;accent-color:#D4AC0D;cursor:pointer}
+  select{width:100%;background:#0D1B2A;border:1px solid #2E4A6B;border-radius:6px;color:#E8EDF2;padding:8px 10px;font-size:.9rem}
+  .rv{color:#D4AC0D;font-weight:700}
+  .rg{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:18px}
+  .rg4{grid-template-columns:repeat(4,1fr)}
+  @media(max-width:700px){.rg,.rg4{grid-template-columns:1fr 1fr}}
+  @media(max-width:420px){.rg,.rg4{grid-template-columns:1fr}}
+  .rb{background:#0D1B2A;border-radius:10px;padding:14px;text-align:center;border:1px solid #2E4A6B}
+  .rb.red  {border-color:#C0392B}.rb.green{border-color:#1E8449}
+  .rb.gold {border-color:#D4AC0D}.rb.blue {border-color:#2E86C1}
+  .rl{font-size:.7rem;color:#7F8C8D;margin-bottom:5px;text-transform:uppercase;letter-spacing:.5px}
+  .rv2{font-size:1.5rem;font-weight:700}
+  .red  .rv2{color:#E74C3C}.green .rv2{color:#27AE60}
+  .gold .rv2{color:#D4AC0D}.blue  .rv2{color:#5DADE2}
+  .rs{font-size:.7rem;color:#7F8C8D;margin-top:3px}
+  .bw{background:#0D1B2A;border-radius:20px;height:22px;overflow:hidden;margin:4px 0}
+  .bf{height:100%;border-radius:20px;transition:width .5s;display:flex;align-items:center;padding-left:10px;font-size:.72rem;font-weight:600;color:white;white-space:nowrap;overflow:hidden}
+  .bad{background:#C0392B}.good{background:#1E8449}.warn{background:#D4AC0D}
+  .stit{font-size:1.1rem;font-weight:700;margin:22px 0 10px}
+  .stit.red  {color:#E74C3C}.stit.gold{color:#D4AC0D}.stit.blue{color:#5DADE2}.stit.green{color:#27AE60}
+  table{width:100%;border-collapse:collapse;font-size:.82rem}
+  thead tr{background:#1B4F72}
+  thead th{padding:10px 12px;text-align:left;color:white;font-weight:600}
+  tbody tr:nth-child(even){background:#1B2A3B}
+  tbody tr:nth-child(odd) {background:#162333}
+  tbody td{padding:9px 12px;border-bottom:1px solid #2E4A6B;vertical-align:middle}
+  .tg {background:#1E8449;color:white;  padding:2px 8px;border-radius:10px;font-size:.74rem;font-weight:600;white-space:nowrap}
+  .tgo{background:#D4AC0D;color:#0D1B2A;padding:2px 8px;border-radius:10px;font-size:.74rem;font-weight:600;white-space:nowrap}
+  .tr {background:#C0392B;color:white;  padding:2px 8px;border-radius:10px;font-size:.74rem;font-weight:600;white-space:nowrap}
+  .tb {background:#2E86C1;color:white;  padding:2px 8px;border-radius:10px;font-size:.74rem;font-weight:600;white-space:nowrap}
+  .tw {background:#7D6608;color:white;  padding:2px 8px;border-radius:10px;font-size:.74rem;font-weight:600;white-space:nowrap}
+  .pg{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  @media(max-width:600px){.pg{grid-template-columns:1fr}}
+  .pc{background:#1B2A3B;border-radius:10px;padding:16px}
+  .pc.sec {border-left:4px solid #E74C3C}.pc.gold{border-left:4px solid #D4AC0D}
+  .pc.blue{border-left:4px solid #5DADE2}.pc.grn {border-left:4px solid #27AE60}
+  .pc h4{font-size:.85rem;margin-bottom:8px}
+  .pc.sec h4{color:#E74C3C}.pc.gold h4{color:#D4AC0D}
+  .pc.blue h4{color:#5DADE2}.pc.grn h4{color:#27AE60}
+  .pc p{color:#AEC6CF;font-size:.82rem;line-height:1.55}
+  .pc strong{color:white}
+  .medo-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:20px}
+  @media(max-width:600px){.medo-grid{grid-template-columns:1fr}}
+  .mc{background:#0D1B2A;border-radius:10px;padding:16px;border:1px solid #C0392B}
+  .mc h4{color:#E74C3C;font-size:.88rem;margin-bottom:8px}
+  .mc p{color:#AEC6CF;font-size:.82rem;line-height:1.5;margin-bottom:10px}
+  .ms{background:#1E8449;border-radius:6px;padding:8px 12px;font-size:.8rem;color:white;font-weight:600}
+  .dbox{margin-top:14px;background:#0D1B2A;border-radius:8px;padding:13px;font-size:.82rem;color:#AEC6CF;line-height:1.7}
+  .info-box{font-size:.85rem;color:#AEC6CF;margin-bottom:16px;padding:10px;background:#0D1B2A;border-radius:8px}
+  .am-pill{display:inline-block;padding:4px 10px;border-radius:12px;font-size:.75rem;font-weight:600;margin:3px}
+  .ap-s{background:#C0392B;color:white}
+  .ap-m{background:#D4AC0D;color:#0D1B2A}
+  .ap-l{background:#1E8449;color:white}
+  hr{border:none;border-top:1px solid #2E4A6B;margin:22px 0}
+  .note{font-size:.74rem;color:#4A6580;margin-top:8px}
+  .footer{text-align:center;padding:26px 20px;color:#4A6580;font-size:.78rem}
+  .smart-badge{background:linear-gradient(90deg,#1E8449,#27AE60);color:white;padding:3px 12px;border-radius:20px;font-size:.78rem;font-weight:600;margin-left:8px}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-icon">🛡️</div>
+  <h1>Seus dados estão <span>vazando</span> para a IA?</h1>
+  <p>Toda vez que você cola uma planilha em uma IA em nuvem, dados reais saem — CPF, salário, segredo industrial. O PSA resolve isso com amostragem estatisticamente inteligente.</p>
+  <div class="badges">
+    <span class="badge b-red">🔴 Risco real hoje</span>
+    <span class="badge b-gold">⚖️ LGPD · GDPR</span>
+    <span class="badge b-green">✅ PSA protege tudo</span>
+    <span class="badge b-blue">🧮 Amostragem Inteligente v5.1</span>
+  </div>
+</div>
+
+<div class="container">
+  <div class="callout c-red">🚨 <strong>O maior risco:</strong> CPF, salário, segredo industrial — indo para servidores de terceiros toda vez que você usa IA.</div>
+  <div class="callout c-green">🛡️ <strong>PSA resolve:</strong> 15 de 19 passos rodam 100% local. <strong>Dados reais jamais saem. Nem o nome do arquivo.</strong></div>
+  <div class="callout c-gold">🧮 <strong>Novo v5.1 — Amostragem Inteligente:</strong> o PSA envia o mínimo estatisticamente necessário para cada tamanho de arquivo — nunca mais do que precisa.</div>
+
+  <div class="tabs">
+    <div class="tab t-seg active" onclick="showTab('seg')">🛡️ Segurança</div>
+    <div class="tab t-am"         onclick="showTab('am')">🧮 Amostragem</div>
+    <div class="tab t-tok"        onclick="showTab('tok')">🪙 Tokens & Custo</div>
+    <div class="tab t-tem"        onclick="showTab('tem')">⚡ Tempo</div>
+    <div class="tab t-pit"        onclick="showTab('pit')">🎯 Argumentos</div>
+  </div>
+
+  <!-- ══ SEGURANÇA ══ -->
+  <div class="tab-panel active" id="tab-seg">
+    <div class="stit red">😰 Os 4 Medos que Toda Empresa Tem</div>
+    <div class="medo-grid">
+      <div class="mc"><h4>😱 "E se vazar dados de clientes?"</h4><p>CPF, salário, endereço — tudo que vai para uma IA em nuvem pode ser armazenado, auditado ou vazar em incidentes.</p><div class="ms">✅ PSA: dados reais nunca saem. Só fictícios vão à nuvem.</div></div>
+      <div class="mc"><h4>⚖️ "Multa da LGPD pode nos destruir"</h4><p>A ANPD pode multar até 2% do faturamento anual. Para R$ 10M de faturamento: R$ 200k de multa.</p><div class="ms">✅ PSA: compliance automático + log auditável de cada operação.</div></div>
+      <div class="mc"><h4>🏭 "Nosso segredo industrial pode vazar"</h4><p>Tabela de preços, margens, clientes VIP — tudo mandado para IA nos servidores que seu concorrente também usa.</p><div class="ms">✅ PSA: apenas dados fictícios chegam à nuvem. Segredo protegido.</div></div>
+      <div class="mc"><h4>🤖 "Meus dados estão treinando o concorrente?"</h4><p>Dependendo dos termos de uso, dados enviados podem alimentar modelos futuros. Sua estratégia disponível para qualquer usuário amanhã.</p><div class="ms">✅ PSA: só fictícios chegam à nuvem. Nada treina nenhum modelo.</div></div>
+    </div>
+    <div class="stit red" style="margin-top:10px">⚖️ Conformidade Garantida</div>
+    <table>
+      <thead><tr><th>Regulação</th><th>Exigência</th><th>PSA</th></tr></thead>
+      <tbody>
+        <tr><td><strong>LGPD</strong> (Brasil)</td><td>Dados pessoais não podem sair sem consentimento</td><td><span class="tg">✅ Anonimização antes do envio</span></td></tr>
+        <tr><td><strong>GDPR</strong> (Europa)</td><td>Dados de cidadãos europeus protegidos</td><td><span class="tg">✅ Apenas fictícios à nuvem</span></td></tr>
+        <tr><td><strong>HIPAA</strong> (Saúde)</td><td>Dados de pacientes sem proteção</td><td><span class="tg">✅ Prontuários ficam locais</span></td></tr>
+        <tr><td><strong>Sigilo profissional</strong></td><td>Advogados/médicos têm dever de sigilo</td><td><span class="tg">✅ Dados do cliente nunca saem</span></td></tr>
+        <tr><td><strong>Segredo industrial</strong></td><td>Dados estratégicos protegidos por NDA</td><td><span class="tg">✅ Só fictícios vão à nuvem</span></td></tr>
+      </tbody>
+    </table>
+    <div style="margin-top:14px;padding:14px;background:#0D1B2A;border-radius:10px;border:1px solid #1E8449;font-size:.85rem;color:#AEC6CF;line-height:1.8">
+      ✅ <strong style="color:#27AE60">Validação real:</strong> base GDF com 256.013 servidores públicos<br>
+      Nomes vazados: <strong style="color:#27AE60">ZERO</strong> · CPFs vazados: <strong style="color:#27AE60">ZERO</strong> · Auditoria: <strong style="color:#27AE60">100/100</strong>
+    </div>
+  </div>
+
+  <!-- ══ AMOSTRAGEM ══ -->
+  <div class="tab-panel" id="tab-am">
+    <div class="info-box" style="border-left:3px solid #27AE60">
+      🧮 <strong style="color:#27AE60">v5.1 — Amostragem Inteligente:</strong> a função <code>calculate_sample_size(n_rows)</code> determina automaticamente o mínimo necessário para cada arquivo, baseada no Teorema Central do Limite (n≥30 garante representatividade estatística).
+    </div>
+    <div class="stit green">📐 Tabela de Amostragem por Faixa</div>
+    <table>
+      <thead><tr><th>Tamanho do arquivo</th><th>Amostra enviada</th><th>Lógica</th><th>Tipo</th></tr></thead>
+      <tbody>
+        <tr><td><strong>≤ 30 linhas</strong></td><td>100% (tudo)</td><td>Arquivo pequeno — amostragem não faz sentido. Aviso automático no log.</td><td><span class="tw">⚠️ Aviso</span></td></tr>
+        <tr><td><strong>31 a 100 linhas</strong></td><td>50% (mín. 30)</td><td>Reduz mas mantém representatividade estatística</td><td><span class="tgo">📉 Parcial</span></td></tr>
+        <tr><td><strong>101 a 10.000 linhas</strong></td><td>100 linhas</td><td>Padrão — mínimo válido com folga</td><td><span class="tg">✅ Eficiente</span></td></tr>
+        <tr><td><strong>10.001 a 100.000 linhas</strong></td><td>150 linhas</td><td>Arquivo grande — amostra ligeiramente maior</td><td><span class="tg">✅ Eficiente</span></td></tr>
+        <tr><td><strong>100.001+ linhas</strong></td><td>200 linhas</td><td>Máximo recomendado</td><td><span class="tg">✅ Eficiente</span></td></tr>
+      </tbody>
+    </table>
+
+    <div class="stit green" style="margin-top:22px">🧮 Calculadora de Amostragem</div>
+    <div class="calc-grid">
+      <div>
+        <label>Tamanho do arquivo (linhas)</label>
+        <input type="range" id="am_linhas" min="1" max="500000" step="100" value="10000" oninput="calcAm()">
+        <div style="margin-top:4px">Linhas: <span class="rv" id="am_linhas_val">10.000</span></div>
+      </div>
+      <div style="display:flex;flex-direction:column;justify-content:center">
+        <div style="background:#0D1B2A;border-radius:10px;padding:16px;text-align:center;border:2px solid #27AE60">
+          <div style="font-size:.75rem;color:#7F8C8D;margin-bottom:6px;text-transform:uppercase;">Amostra PSA (v5.1)</div>
+          <div style="font-size:2rem;font-weight:700;color:#27AE60" id="am_result">—</div>
+          <div style="font-size:.75rem;color:#7F8C8D;margin-top:4px" id="am_pct">—</div>
+        </div>
+      </div>
+    </div>
+    <div style="margin-top:16px">
+      <div style="font-size:.8rem;color:#AEC6CF;margin-bottom:6px;">Comparação de tokens enviados:</div>
+      <div style="font-size:.74rem;color:#7F8C8D;margin-bottom:3px;">Sem PSA (arquivo completo)</div>
+      <div class="bw"><div class="bf bad" id="am_bar_sem" style="width:100%">—</div></div>
+      <div style="font-size:.74rem;color:#7F8C8D;margin:5px 0 3px;">Com PSA (amostra inteligente v5.1)</div>
+      <div class="bw"><div class="bf good" id="am_bar_com" style="width:1%">—</div></div>
+    </div>
+    <div class="dbox" id="am_detalhe">—</div>
+
+    <div class="stit green" style="margin-top:22px">📋 Exemplos Reais</div>
+    <table>
+      <thead><tr><th>Caso</th><th>Linhas Reais</th><th>Amostra v5.1</th><th>% Enviado</th><th>Comportamento</th></tr></thead>
+      <tbody>
+        <tr><td>PME pequena</td><td>25</td><td>25 (tudo)</td><td>100%</td><td><span class="tw">⚠️ Aviso no log</span></td></tr>
+        <tr><td>Escritório advocacia</td><td>60</td><td>30</td><td>50%</td><td><span class="tgo">📉 Redução parcial</span></td></tr>
+        <tr><td>Empresa média</td><td>500</td><td>100</td><td>20%</td><td><span class="tg">✅ Eficiente</span></td></tr>
+        <tr><td>Hospital</td><td>10.000</td><td>100</td><td>1%</td><td><span class="tg">✅ Eficiente</span></td></tr>
+        <tr><td>Banco / Finanças</td><td>50.000</td><td>150</td><td>0,3%</td><td><span class="tg">✅ Muito eficiente</span></td></tr>
+        <tr><td>GDF / Governo</td><td>256.013</td><td>200</td><td>0,08%</td><td><span class="tg">✅ Máximo eficiente</span></td></tr>
+      </tbody>
+    </table>
+    <p class="note">* --sample N no CLI sobrescreve a amostragem automática se necessário.</p>
+  </div>
+
+  <!-- ══ TOKENS ══ -->
+  <div class="tab-panel" id="tab-tok">
+    <div class="info-box" style="border-left:3px solid #D4AC0D">
+      💡 <strong style="color:#D4AC0D">A economia de tokens é consequência da segurança.</strong> Para não enviar dados reais, o PSA usa amostragem inteligente — e isso reduz o custo em até 99,96%.
+    </div>
+    <div class="calc-grid">
+      <div>
+        <label>Linhas no arquivo real</label>
+        <input type="range" id="linhas" min="500" max="500000" step="500" value="10000" oninput="calcular()">
+        <div style="margin-top:4px">Linhas: <span class="rv" id="linhas_val">10.000</span></div>
+      </div>
+      <div>
+        <label>Colunas no arquivo</label>
+        <input type="range" id="colunas" min="5" max="50" step="1" value="15" oninput="calcular()">
+        <div style="margin-top:4px">Colunas: <span class="rv" id="colunas_val">15</span></div>
+      </div>
+      <div>
+        <label>Análises por mês</label>
+        <input type="range" id="analises" min="1" max="200" step="1" value="10" oninput="calcular()">
+        <div style="margin-top:4px">Análises: <span class="rv" id="analises_val">10</span>/mês</div>
+      </div>
+      <div style="display:flex;flex-direction:column;justify-content:center">
+        <div style="background:#0D1B2A;border-radius:8px;padding:10px;font-size:.8rem;color:#AEC6CF;border:1px solid #D4AC0D">
+          🧮 <strong style="color:#D4AC0D">Amostra calculada automaticamente</strong> pelo PSA v5.1 com base no tamanho do arquivo.
+        </div>
+      </div>
+    </div>
+    <div class="rg">
+      <div class="rb green"><div class="rl">Economia por análise</div><div class="rv2" id="eco_pct">—</div><div class="rs">dos tokens de entrada</div></div>
+      <div class="rb gold"><div class="rl">Tokens economizados/mês</div><div class="rv2" id="eco_mes">—</div><div class="rs">tokens/mês</div></div>
+      <div class="rb blue"><div class="rl">Economia em R$/mês</div><div class="rv2" id="eco_reais">—</div><div class="rs">a ~R$15/MTok</div></div>
+    </div>
+    <div style="margin-top:16px">
+      <div style="font-size:.8rem;color:#AEC6CF;margin-bottom:6px;">Tokens enviados à nuvem por análise:</div>
+      <div style="font-size:.74rem;color:#7F8C8D;margin-bottom:3px;">Sem PSA (dados reais, arquivo completo)</div>
+      <div class="bw"><div class="bf bad" id="bar_sem" style="width:100%">—</div></div>
+      <div style="font-size:.74rem;color:#7F8C8D;margin:5px 0 3px;">Com PSA v5.1 (dados fictícios, amostra inteligente)</div>
+      <div class="bw"><div class="bf good" id="bar_com" style="width:1%">—</div></div>
+    </div>
+    <div class="dbox"><strong style="color:#D4AC0D">📊 Detalhe:</strong><br><span id="detalhe">—</span></div>
+
+    <div class="stit gold" style="margin-top:22px">📋 Economia por Segmento (com amostragem v5.1)</div>
+    <table>
+      <thead><tr><th>Segmento</th><th>Linhas Reais</th><th>Amostra v5.1</th><th>Economia Tokens</th><th>R$/mês (10x)</th></tr></thead>
+      <tbody>
+        <tr><td>🏛️ Governo/GDF</td><td>256.000</td><td>200</td><td><span class="tgo">99,92%</span></td><td><span class="tg">~R$ 2.877</span></td></tr>
+        <tr><td>🏦 Finanças</td><td>50.000</td><td>150</td><td><span class="tgo">99,7%</span></td><td><span class="tg">~R$ 561</span></td></tr>
+        <tr><td>🏥 Saúde</td><td>10.000</td><td>100</td><td><span class="tgo">99%</span></td><td><span class="tg">~R$ 112</span></td></tr>
+        <tr><td>⚖️ Advocacia</td><td>5.000</td><td>100</td><td><span class="tgo">98%</span></td><td><span class="tg">~R$ 56</span></td></tr>
+        <tr><td>💼 RH/Contábil.</td><td>500</td><td>100</td><td><span class="tg">80%</span></td><td><span class="tg">~R$ 9</span></td></tr>
+        <tr><td>🏪 PME pequena</td><td>25</td><td>25 (tudo)</td><td><span class="tw">0% — arquivo pequeno</span></td><td>—</td></tr>
+      </tbody>
+    </table>
+    <p class="note">* ~250 tokens/linha, 15 colunas. R$15/MTok.</p>
+  </div>
+
+  <!-- ══ TEMPO ══ -->
+  <div class="tab-panel" id="tab-tem">
+    <div class="info-box" style="border-left:3px solid #5DADE2">
+      💡 <strong style="color:#5DADE2">A velocidade é consequência da amostragem inteligente.</strong> Como o PSA v5.1 envia apenas o mínimo necessário (100–200 linhas fictícias), o processamento é quase instantâneo.
+    </div>
+    <div class="calc-grid">
+      <div>
+        <label>Linhas no arquivo real</label>
+        <input type="range" id="t_linhas" min="500" max="500000" step="500" value="10000" oninput="calcTempo()">
+        <div style="margin-top:4px">Linhas: <span class="rv" id="t_linhas_val">10.000</span></div>
+      </div>
+      <div>
+        <label>Velocidade de internet</label>
+        <select id="t_internet" onchange="calcTempo()">
+          <option value="10">Lenta (10 Mbps)</option>
+          <option value="50" selected>Média (50 Mbps)</option>
+          <option value="200">Rápida (200 Mbps)</option>
+          <option value="500">Fibra (500 Mbps)</option>
+        </select>
+      </div>
+      <div>
+        <label>Análises por dia</label>
+        <input type="range" id="t_analises_dia" min="1" max="20" step="1" value="3" oninput="calcTempo()">
+        <div style="margin-top:4px">Análises: <span class="rv" id="t_analises_dia_val">3</span>/dia</div>
+      </div>
+      <div>
+        <label>Dias úteis por mês</label>
+        <input type="range" id="t_dias" min="10" max="22" step="1" value="22" oninput="calcTempo()">
+        <div style="margin-top:4px">Dias: <span class="rv" id="t_dias_val">22</span>/mês</div>
+      </div>
+    </div>
+    <div class="rg rg4">
+      <div class="rb red"><div class="rl">Tempo SEM PSA</div><div class="rv2" id="t_sem">—</div><div class="rs">upload + IA (dados reais)</div></div>
+      <div class="rb green"><div class="rl">Tempo COM PSA v5.1</div><div class="rv2" id="t_com">—</div><div class="rs">upload + IA + local</div></div>
+      <div class="rb gold"><div class="rl">Horas salvas/mês</div><div class="rv2" id="t_horas_mes">—</div><div class="rs">horas/mês por analista</div></div>
+      <div class="rb blue"><div class="rl">Dias recuperados</div><div class="rv2" id="t_dias_rec">—</div><div class="rs">dias/mês por analista</div></div>
+    </div>
+    <div style="margin-top:16px">
+      <div style="font-size:.8rem;color:#AEC6CF;margin-bottom:6px;">Tempo por análise:</div>
+      <div style="font-size:.74rem;color:#7F8C8D;margin-bottom:3px;">Sem PSA</div>
+      <div class="bw"><div class="bf bad" id="tbar_sem" style="width:100%">—</div></div>
+      <div style="font-size:.74rem;color:#7F8C8D;margin:5px 0 3px;">Com PSA v5.1</div>
+      <div class="bw"><div class="bf good" id="tbar_com" style="width:1%">—</div></div>
+    </div>
+    <div style="margin-top:14px;padding:13px;background:#0D1B2A;border-radius:8px;border:1px solid #5DADE2">
+      <div style="font-size:.85rem;color:#5DADE2;font-weight:700;margin-bottom:8px;">🚨 Alertas:</div>
+      <div id="t_situacoes" style="font-size:.82rem;color:#AEC6CF;line-height:1.9">—</div>
+    </div>
+    <div class="dbox"><strong style="color:#5DADE2">⚡ Detalhe:</strong><br><span id="t_detalhe">—</span></div>
+  </div>
+
+  <!-- ══ PITCH ══ -->
+  <div class="tab-panel" id="tab-pit">
+    <div class="info-box" style="border-left:3px solid #27AE60">
+      💡 <strong style="color:#27AE60">Regra de ouro:</strong> sempre comece pelo medo de segurança — depois apresente amostragem inteligente, custo e velocidade como consequências.
+    </div>
+    <div class="stit red">🔴 Primeiro — a dor de segurança</div>
+    <div class="pg" style="margin-bottom:20px">
+      <div class="pc sec"><h4>⚖️ Jurídico / Compliance / DPO</h4><p>"Cada vez que um funcionário cola uma planilha no ChatGPT, CPFs e salários vão para servidores fora do Brasil. <strong>Isso é uma violação da LGPD.</strong> O PSA garante que dados reais nunca saem — com log auditável de cada operação."</p></div>
+      <div class="pc sec"><h4>🔒 TI / CISO</h4><p>"Você tem uma política de uso de IA? Seu analista está mandando a folha de pagamento para o ChatGPT toda sexta. <strong>PSA é a única solução que protege sem travar a produtividade.</strong>"</p></div>
+      <div class="pc sec"><h4>🏥 Saúde / Advocacia</h4><p>"Dados de pacientes e clientes são protegidos por lei. Com PSA, <strong>você usa a melhor IA sem violar o sigilo</strong> — os dados reais nunca saem."</p></div>
+      <div class="pc sec"><h4>🏭 Diretoria / Board</h4><p>"Sua tabela de preços e lista de clientes VIP está indo para servidores que seu concorrente também usa. <strong>Com PSA, só fictícios chegam à nuvem.</strong>"</p></div>
+    </div>
+    <div class="stit gold">🟡 Depois — amostragem inteligente e benefícios</div>
+    <div class="pg">
+      <div class="pc gold"><h4>🧮 Amostragem Inteligente v5.1</h4><p>"O PSA não manda um número fixo — ele calcula o mínimo estatisticamente necessário para cada arquivo. <strong>Arquivo de 256k linhas? Manda 200. Arquivo de 25 linhas? Manda tudo com aviso.</strong> Sempre o mínimo, nunca mais."</p></div>
+      <div class="pc gold"><h4>💰 CFO / Gestor Financeiro</h4><p>"Além da proteção, você para de pagar 99x mais tokens. <strong>O PSA envia apenas o mínimo estatístico — o resultado é o mesmo, o custo é uma fração.</strong>"</p></div>
+      <div class="pc blue"><h4>⚡ Gestor de Produtividade</h4><p>"Análises que travavam por 15 minutos passam a terminar em 30 segundos. <strong>Uma equipe de 3 analistas recupera dias de trabalho por mês.</strong>"</p></div>
+      <div class="pc grn"><h4>🏛️ Governo / Setor Público</h4><p>"Testado com 256.013 servidores do GDF — zero vazamentos, 100/100. <strong>Conformidade LGPD em todas as análises com IA.</strong> Log auditável incluído."</p></div>
+    </div>
+    <div style="margin-top:22px">
+      <div class="callout c-red" style="font-size:1.05rem;margin-bottom:10px">🛡️ "PSA não é uma ferramenta de produtividade. É uma camada de segurança que, como consequência, também economiza 99% dos tokens e torna qualquer análise 30x mais rápida."</div>
+      <div class="callout c-green">"15 de 19 passos rodam 100% local. Nem o nome do arquivo sai do computador."</div>
+    </div>
+  </div>
+</div>
+
+<div class="footer">
+  PSA — Privacy Shield Agent for AI · Marcos Cruz · Brasília/DF · Março 2026<br>
+  github.com/myrkis-br/psa-privacy-shield-agent-for-ai
+</div>
+
+<script>
+function fmt(n){if(n>=1e9)return(n/1e9).toFixed(1)+'B';if(n>=1e6)return(n/1e6).toFixed(1)+'M';if(n>=1e3)return(n/1e3).toFixed(0)+'k';return n.toString()}
+function fmtT(s){if(s<60)return Math.round(s)+'s';if(s<3600){let m=Math.floor(s/60),r=Math.round(s%60);return r?m+'min '+r+'s':m+' min';}let h=Math.floor(s/3600),m=Math.round((s%3600)/60);return m?h+'h '+m+'min':h+'h'}
+
+function smartSample(n){
+  if(n<=30) return n;
+  if(n<=100) return Math.max(30,Math.floor(n*0.5));
+  if(n<=100000) return n<=10000?100:150;
+  return 200;
+}
+
+// ── Amostragem ──
+function calcAm(){
+  const n=+document.getElementById('am_linhas').value;
+  document.getElementById('am_linhas_val').textContent=n.toLocaleString('pt-BR');
+  const am=smartSample(n);
+  const pct=(am/n*100).toFixed(1);
+  document.getElementById('am_result').textContent=am<=n?am.toLocaleString('pt-BR'):n.toLocaleString('pt-BR');
+  document.getElementById('am_pct').textContent=pct+'% do arquivo enviado';
+  const tok=250,full=n*tok,amTok=am*tok;
+  const bpct=Math.max(0.3,(amTok/full)*100).toFixed(2);
+  document.getElementById('am_bar_sem').style.width='100%';
+  document.getElementById('am_bar_sem').textContent=fmt(full)+' tokens';
+  document.getElementById('am_bar_com').style.width=bpct+'%';
+  document.getElementById('am_bar_com').textContent=fmt(amTok)+' tokens';
+  let regra='';
+  if(n<=30) regra='⚠️ Arquivo pequeno — enviando todas as linhas com aviso no log';
+  else if(n<=100) regra=`📉 Redução parcial — 50% de ${n} linhas = ${am} linhas (mín. 30)`;
+  else if(n<=10000) regra='✅ Padrão — mínimo estatisticamente válido';
+  else if(n<=100000) regra='✅ Arquivo grande — amostra ligeiramente maior (150 linhas)';
+  else regra='✅ Arquivo muito grande — máximo recomendado (200 linhas)';
+  document.getElementById('am_detalhe').innerHTML=
+    `<strong style="color:#27AE60">Lógica v5.1:</strong> ${regra}<br>`+
+    `Arquivo real: <strong>${n.toLocaleString('pt-BR')} linhas</strong> · Amostra: <strong>${am} linhas</strong> · Enviado: <strong>${pct}%</strong><br>`+
+    `Economia de tokens: <strong>${fmt(full-amTok)} tokens (${(100-pct).toFixed(1)}%)</strong>`;
+}
+
+// ── Tokens ──
+function calcular(){
+  const linhas=+document.getElementById('linhas').value;
+  const colunas=+document.getElementById('colunas').value;
+  const analises=+document.getElementById('analises').value;
+  document.getElementById('linhas_val').textContent=linhas.toLocaleString('pt-BR');
+  document.getElementById('colunas_val').textContent=colunas;
+  document.getElementById('analises_val').textContent=analises;
+  const am=smartSample(linhas);
+  const tok=Math.round(250*(colunas/15));
+  const full=linhas*tok,amTok=am*tok;
+  const eco=(full-amTok)/full*100;
+  const ecoMes=(full-amTok)*analises;
+  const ecoR=ecoMes/1e6*15;
+  document.getElementById('eco_pct').textContent=eco.toFixed(1)+'%';
+  document.getElementById('eco_mes').textContent=fmt(ecoMes);
+  document.getElementById('eco_reais').textContent=ecoR<1?'R$ <1':'R$ '+ecoR.toFixed(0);
+  const pct=Math.max(0.3,(amTok/full)*100).toFixed(2);
+  document.getElementById('bar_sem').style.width='100%';
+  document.getElementById('bar_sem').textContent=fmt(full)+' tokens';
+  document.getElementById('bar_com').style.width=pct+'%';
+  document.getElementById('bar_com').textContent=fmt(amTok)+' tokens (amostra: '+am+' linhas)';
+  document.getElementById('detalhe').innerHTML=
+    `Arquivo real: <strong>${linhas.toLocaleString('pt-BR')} linhas × ${colunas} colunas ≈ ${fmt(full)} tokens</strong><br>`+
+    `Amostra PSA v5.1: <strong>${am} linhas × ${colunas} colunas ≈ ${fmt(amTok)} tokens</strong><br>`+
+    `Economia/análise: <strong>${fmt(full-amTok)} tokens</strong> · ${analises}x/mês = <strong>${fmt(ecoMes)} tokens ≈ R$ ${ecoR.toFixed(0)}/mês</strong>`;
+}
+
+// ── Tempo ──
+function calcTempo(){
+  const linhas=+document.getElementById('t_linhas').value;
+  const mbps=+document.getElementById('t_internet').value;
+  const anDia=+document.getElementById('t_analises_dia').value;
+  const dias=+document.getElementById('t_dias').value;
+  document.getElementById('t_linhas_val').textContent=linhas.toLocaleString('pt-BR');
+  document.getElementById('t_analises_dia_val').textContent=anDia;
+  document.getElementById('t_dias_val').textContent=dias;
+  const am=smartSample(linhas);
+  const szFull=linhas*500/1e6,szAm=am*500/1e6;
+  const upSem=(szFull*8)/mbps,upCom=(szAm*8)/mbps;
+  const iaSem=Math.max(5,linhas*250/10000),iaCom=Math.max(3,am*250/10000);
+  const tSem=upSem+iaSem,tCom=upCom+iaCom+5;
+  const eco=Math.max(0,tSem-tCom);
+  const hMes=eco*anDia*dias/3600,dRec=hMes/8;
+  document.getElementById('t_sem').textContent=fmtT(tSem);
+  document.getElementById('t_com').textContent=fmtT(tCom);
+  document.getElementById('t_horas_mes').textContent=hMes>=1?hMes.toFixed(1):'<1';
+  document.getElementById('t_dias_rec').textContent=dRec>=0.1?dRec.toFixed(1):'<0.1';
+  const pT=Math.max(1,(tCom/tSem)*100).toFixed(1);
+  document.getElementById('tbar_sem').style.width='100%';
+  document.getElementById('tbar_sem').textContent=fmtT(tSem);
+  document.getElementById('tbar_com').style.width=pT+'%';
+  document.getElementById('tbar_com').textContent=fmtT(tCom);
+  let sit='';
+  if(tSem>300) sit+='🔴 <strong>Timeout provável</strong> — maioria das IAs tem limite de ~5 min.<br>';
+  if(linhas>50000) sit+='🔴 <strong>Contexto excedido</strong> — arquivo grande demais para a janela da IA.<br>';
+  if(mbps<=10) sit+='🟡 <strong>Internet lenta</strong> — upload do arquivo completo pode falhar.<br>';
+  sit+=`✅ <strong>Com PSA v5.1:</strong> upload sempre em ${fmtT(upCom)} — amostra inteligente de ${am} linhas.`;
+  document.getElementById('t_situacoes').innerHTML=sit;
+  document.getElementById('t_detalhe').innerHTML=
+    `Amostra calculada automaticamente: <strong>${am} linhas</strong><br>`+
+    `Upload sem PSA: <strong>${fmtT(upSem)}</strong> (${szFull.toFixed(1)} MB) · Upload com PSA: <strong>${fmtT(upCom)}</strong> (${szAm.toFixed(3)} MB)<br>`+
+    `Processamento IA sem PSA: <strong>${fmtT(iaSem)}</strong> · Com PSA: <strong>${fmtT(iaCom)}</strong><br>`+
+    `Economia/análise: <strong>${fmtT(eco)}</strong> · ${anDia}×/dia × ${dias} dias = <strong>${hMes.toFixed(1)}h/mês</strong>`;
+}
+
+// ── Tabs ──
+function showTab(id){
+  document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('tab-'+id).classList.add('active');
+  const idx=['seg','am','tok','tem','pit'].indexOf(id);
+  document.querySelectorAll('.tab')[idx].classList.add('active');
+}
+
+calcAm(); calcular(); calcTempo();
+</script>
+</body>
+</html>
