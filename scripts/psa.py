@@ -129,7 +129,7 @@ def _security_check(path: Path) -> bool:
 
 def _anonymize(
     input_path: Path,
-    sample: int = 100,
+    sample: Optional[int] = None,
     pages: int = 10,
     paragraphs: int = 20,
     slides: int = 15,
@@ -367,8 +367,8 @@ Exemplos:
         help="Lista arquivos registrados (apenas códigos, sem nomes reais)",
     )
     parser.add_argument(
-        "--sample", type=int, default=100, metavar="N",
-        help="[Planilhas] Máximo de linhas na amostra (padrão: 100)",
+        "--sample", type=int, default=None, metavar="N",
+        help="[Planilhas] Número de linhas na amostra (omita para automático)",
     )
     parser.add_argument(
         "--pages", type=int, default=10, metavar="N",

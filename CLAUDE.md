@@ -145,9 +145,25 @@ python3 scripts/psa.py DOC_001 --sample 50
 python3 scripts/psa.py data/real/<arquivo>
 ```
 
+### Amostragem inteligente (planilhas)
+
+O PSA calcula automaticamente o tamanho ideal da amostra:
+
+| Tamanho do arquivo (N linhas) | Amostra enviada     | Regra                                    |
+|-------------------------------|---------------------|------------------------------------------|
+| N ≤ 30                        | 100% (todas)        | Arquivo pequeno — manda tudo com aviso   |
+| 31 a 100                      | 50% de N (mín. 30)  | Reduz mas mantém representatividade      |
+| 101 a 1.000                   | 100 linhas          | Padrão                                   |
+| 1.001 a 10.000                | 100 linhas          | Idem                                     |
+| 10.001 a 100.000              | 150 linhas          | Arquivo grande — amostra maior           |
+| 100.001+                      | 200 linhas          | Máximo recomendado                       |
+
+O parâmetro `--sample` sobrescreve a lógica automática quando informado explicitamente.
+
 ### Opções de amostragem
 ```bash
-python3 scripts/psa.py DOC_001 --sample 50        # planilha: 50 linhas
+python3 scripts/psa.py DOC_001                     # planilha: amostragem inteligente
+python3 scripts/psa.py DOC_001 --sample 50         # planilha: força 50 linhas
 python3 scripts/psa.py DOC_002 --pages 5           # PDF: 5 páginas
 python3 scripts/psa.py DOC_003 --paragraphs 15     # documento: 15 parágrafos
 python3 scripts/psa.py DOC_004 --slides 10          # apresentação: 10 slides

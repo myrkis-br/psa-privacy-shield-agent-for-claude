@@ -275,6 +275,35 @@ def _anonymize_coordinate(value) -> str:
         return str(value)
 
 
+# ---------------------------------------------------------------------------
+# Amostragem inteligente
+# ---------------------------------------------------------------------------
+
+def calculate_sample_size(n_rows: int) -> int:
+    """
+    Calcula o tamanho ideal da amostra com base no total de linhas.
+
+    | N linhas        | Amostra           | Regra                           |
+    |-----------------|-------------------|---------------------------------|
+    | N <= 30         | 100% (N)          | Arquivo pequeno, manda tudo     |
+    | 31 a 100        | 50% de N (min 30) | Reduz mas mantém representativ. |
+    | 101 a 1.000     | 100               | Padrão                          |
+    | 1.001 a 10.000  | 100               | Idem                            |
+    | 10.001 a 100.000| 150               | Arquivo grande                  |
+    | 100.001+        | 200               | Máximo recomendado              |
+    """
+    if n_rows <= 30:
+        return n_rows
+    elif n_rows <= 100:
+        return max(30, n_rows // 2)
+    elif n_rows <= 10000:
+        return 100
+    elif n_rows <= 100000:
+        return 150
+    else:
+        return 200
+
+
 GENERATORS: Dict[str, object] = {
     "name":           lambda v: _cached(v, fake.name),
     "company":        lambda v: _cached(v, fake.company),
@@ -349,14 +378,16 @@ class LeakageError(Exception):
 
 def anonymize_spreadsheet(
     input_path: Path,
-    sample_size: int = 100,
+    sample_size: Optional[int] = None,
 ) -> Tuple[Path, Path]:
     """
     Anonimiza uma planilha CSV ou XLSX.
 
     Args:
         input_path: Caminho para o arquivo real (em data/real/)
-        sample_size: Número máximo de linhas a incluir na amostra
+        sample_size: Número de linhas na amostra.
+                     None = amostragem inteligente automática.
+                     Valor explícito = sobrescreve a lógica automática.
 
     Returns:
         Tuple (caminho_anonimizado, caminho_mapa)
@@ -397,13 +428,31 @@ def anonymize_spreadsheet(
     total_rows = len(df)
     log.info(f"Arquivo carregado: {total_rows} linhas, {len(df.columns)} colunas")
 
-    # --- Amostragem ---
-    if total_rows > sample_size:
-        df_sample = df.sample(n=sample_size, random_state=42).reset_index(drop=True)
-        log.info(f"Amostra selecionada: {sample_size} de {total_rows} linhas")
+    # --- Amostragem inteligente ---
+    if sample_size is not None:
+        # Usuário informou --sample explicitamente: usa o valor dele
+        effective_sample = min(sample_size, total_rows)
+        log.info(f"Amostragem manual: --sample {sample_size} (usuário)")
     else:
+        # Amostragem automática baseada no tamanho do arquivo
+        effective_sample = calculate_sample_size(total_rows)
+        log.info(f"Amostragem inteligente: {effective_sample} linhas calculadas para N={total_rows}")
+
+    pct_sent = (effective_sample / total_rows * 100) if total_rows > 0 else 100
+    pct_saved = 100 - pct_sent
+
+    if effective_sample >= total_rows:
         df_sample = df.copy()
-        log.info(f"Usando todas as {total_rows} linhas (abaixo do limite de {sample_size})")
+        log.warning(
+            f"⚠ Arquivo pequeno — enviando todas as {total_rows} linhas "
+            f"(100% do arquivo)"
+        )
+    else:
+        df_sample = df.sample(n=effective_sample, random_state=42).reset_index(drop=True)
+        log.info(
+            f"Amostra selecionada: {effective_sample} de {total_rows} linhas "
+            f"({pct_sent:.2f}% enviado, {pct_saved:.2f}% economizado)"
+        )
 
     # --- Detecção de colunas sensíveis ---
     col_types: Dict[str, Optional[str]] = {}
@@ -472,6 +521,9 @@ def anonymize_spreadsheet(
         "arquivo_anonimizado": str(anon_path),
         "total_linhas_original": total_rows,
         "total_linhas_amostra": len(df_anon),
+        "pct_enviado": round(pct_sent, 2),
+        "pct_economizado": round(pct_saved, 2),
+        "amostragem": "manual" if sample_size is not None else "automatica",
         "colunas": {
             col_rename_map[col]: {
                 "nome_original": col,
@@ -495,7 +547,9 @@ def anonymize_spreadsheet(
     sensitive_count = sum(1 for k in col_types.values() if k is not None)
     log.info(
         f"Anonimização concluída: {sensitive_count}/{len(df_sample.columns)} colunas "
-        f"sensíveis + {len(freetext_cols)} texto livre, {len(df_anon)} linhas na amostra."
+        f"sensíveis + {len(freetext_cols)} texto livre | "
+        f"Tamanho real: {total_rows} | Amostra: {len(df_anon)} | "
+        f"Enviado: {pct_sent:.2f}% | Economizado: {pct_saved:.2f}%"
     )
 
     return anon_path, map_path
@@ -560,9 +614,9 @@ def main():
     parser.add_argument(
         "--sample",
         type=int,
-        default=100,
+        default=None,
         metavar="N",
-        help="Número máximo de linhas na amostra (padrão: 100)",
+        help="Número de linhas na amostra (omita para amostragem inteligente automática)",
     )
     args = parser.parse_args()
 
