@@ -16,6 +16,10 @@
     --muted: #6b7280;
     --border: rgba(0,229,255,0.12);
     --border2: rgba(255,255,255,0.07);
+    --red: #f87171;
+    --orange: #fb923c;
+    --yellow: #fbbf24;
+    --purple: #a78bfa;
   }
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   html { scroll-behavior: smooth; }
@@ -162,11 +166,12 @@
   .hero-desc {
     font-size: 1.1rem;
     color: var(--muted);
-    max-width: 520px;
+    max-width: 620px;
     line-height: 1.8;
     margin-bottom: 3rem;
     animation: fadeUp 0.7s 0.2s ease both;
   }
+  .hero-desc strong { color: var(--text); font-weight: 500; }
   .waitlist {
     animation: fadeUp 0.7s 0.3s ease both;
     width: 100%;
@@ -290,6 +295,222 @@
   [data-lang].active { display: block; }
   span[data-lang].active { display: inline; }
 
+  /* --- Fears Section --- */
+  .fears-section {
+    position: relative;
+    z-index: 1;
+    padding: 5rem 2rem 2rem;
+    max-width: 960px;
+    margin: 0 auto;
+  }
+  .fears-headline {
+    text-align: center;
+    margin-bottom: 2.5rem;
+  }
+  .fears-headline h2 {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: clamp(1.6rem, 4vw, 2.4rem);
+    letter-spacing: -0.02em;
+    color: var(--text);
+    margin-bottom: 0.5rem;
+  }
+  .fears-headline h2 em { font-style: normal; color: var(--red); }
+  .fears-subtitle {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 1rem;
+    color: var(--muted);
+    max-width: 600px;
+    margin: 0 auto;
+    line-height: 1.7;
+  }
+  .fears-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.2rem;
+    margin-bottom: 2.5rem;
+  }
+  .fear-card {
+    background: var(--bg2);
+    border: 1px solid var(--border2);
+    border-radius: 10px;
+    padding: 1.5rem;
+    position: relative;
+    overflow: hidden;
+    transition: border-color 0.3s;
+  }
+  .fear-card:hover {
+    border-color: var(--border);
+  }
+  .fear-card::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+  }
+  .fear-card.fear-leak::before { background: var(--red); }
+  .fear-card.fear-fine::before { background: var(--orange); }
+  .fear-card.fear-secret::before { background: var(--yellow); }
+  .fear-card.fear-training::before { background: var(--purple); }
+  .fear-icon {
+    font-size: 1.6rem;
+    margin-bottom: 0.7rem;
+    display: block;
+  }
+  .fear-title {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 1rem;
+    color: var(--text);
+    margin-bottom: 0.5rem;
+  }
+  .fear-risk {
+    font-size: 0.85rem;
+    color: var(--muted);
+    line-height: 1.6;
+    margin-bottom: 0.8rem;
+  }
+  .fear-solution {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.75rem;
+    color: var(--accent3);
+    letter-spacing: 0.02em;
+    display: flex;
+    align-items: flex-start;
+    gap: 0.4rem;
+    line-height: 1.5;
+  }
+  .fear-solution::before {
+    content: '>';
+    color: var(--accent);
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+
+  /* --- Compliance Badges --- */
+  .compliance-section {
+    position: relative;
+    z-index: 1;
+    padding: 1.5rem 2rem 2rem;
+    max-width: 960px;
+    margin: 0 auto;
+    text-align: center;
+  }
+  .compliance-badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.7rem;
+    justify-content: center;
+    margin-bottom: 2rem;
+  }
+  .compliance-pill {
+    background: rgba(0,255,157,0.06);
+    border: 1px solid rgba(0,255,157,0.15);
+    border-radius: 999px;
+    padding: 0.45rem 1.1rem;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.75rem;
+    color: var(--accent3);
+    letter-spacing: 0.04em;
+  }
+
+  /* --- Real Case Callout --- */
+  .case-callout {
+    position: relative;
+    z-index: 1;
+    max-width: 720px;
+    margin: 0 auto 1rem;
+    background: rgba(0,229,255,0.04);
+    border: 1px solid rgba(0,229,255,0.15);
+    border-radius: 10px;
+    padding: 1.5rem 2rem;
+    text-align: center;
+  }
+  .case-callout-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 0.6rem;
+  }
+  .case-callout-text {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: clamp(1rem, 2.5vw, 1.3rem);
+    color: var(--text);
+    line-height: 1.5;
+  }
+  .case-callout-text strong { color: var(--accent3); font-weight: 800; }
+  .case-callout-text em { font-style: normal; color: var(--accent); }
+
+  /* --- Benefits Section --- */
+  .benefits-section {
+    position: relative;
+    z-index: 1;
+    padding: 3rem 2rem 2rem;
+    max-width: 960px;
+    margin: 0 auto;
+  }
+  .benefits-headline {
+    text-align: center;
+    margin-bottom: 2rem;
+  }
+  .benefits-headline h2 {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: clamp(1.4rem, 3.5vw, 2rem);
+    letter-spacing: -0.02em;
+    color: var(--text);
+    margin-bottom: 0.5rem;
+  }
+  .benefits-headline h2 em { font-style: normal; color: var(--accent); }
+  .benefits-note {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.75rem;
+    color: var(--muted);
+    text-align: center;
+    margin-bottom: 1.5rem;
+    letter-spacing: 0.02em;
+  }
+  .benefits-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.2rem;
+    margin-bottom: 2rem;
+  }
+  .benefit-card {
+    background: var(--bg2);
+    border: 1px solid var(--border2);
+    border-radius: 10px;
+    padding: 1.5rem;
+    text-align: center;
+    transition: border-color 0.3s;
+  }
+  .benefit-card:hover { border-color: var(--border); }
+  .benefit-number {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 2.2rem;
+    color: var(--accent);
+    margin-bottom: 0.4rem;
+    text-shadow: 0 0 30px rgba(0,229,255,0.3);
+  }
+  .benefit-label {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.95rem;
+    color: var(--text);
+    font-weight: 400;
+    margin-bottom: 0.5rem;
+  }
+  .benefit-desc {
+    font-size: 0.8rem;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+
   /* --- 19 Passos --- */
   .steps-section {
     position: relative;
@@ -386,10 +607,13 @@
     nav { padding: 1rem 1.2rem; }
     .lang-btn { padding: 0.15rem 0.35rem; font-size: 0.62rem; }
     footer { padding: 1.2rem; flex-direction: column; text-align: center; }
+    .fears-grid { grid-template-columns: 1fr; }
+    .benefits-grid { grid-template-columns: 1fr; }
     .steps-section { padding: 3rem 1rem 2rem; }
     .steps-table { font-size: 0.72rem; }
     .steps-table thead th { font-size: 0.6rem; }
     .steps-table td, .steps-table th { padding: 0.4rem 0.35rem; }
+    .case-callout { padding: 1.2rem 1rem; }
   }
 </style>
 </head>
@@ -415,30 +639,30 @@
 
   <div class="badge">
     <span class="badge-dot"></span>
-    <span data-lang="pt" class="active">Seu guarda-costas digital — Claude, ChatGPT, Gemini e mais</span>
-    <span data-lang="en">Your digital bodyguard — Claude, ChatGPT, Gemini and more</span>
-    <span data-lang="es">Tu guardaespaldas digital — Claude, ChatGPT, Gemini y más</span>
-    <span data-lang="zh">您的数字保镖 — Claude、ChatGPT、Gemini 等</span>
-    <span data-lang="hi">आपका डिजिटल बॉडीगार्ड — Claude, ChatGPT, Gemini और अधिक</span>
-    <span data-lang="fr">Votre garde du corps numérique — Claude, ChatGPT, Gemini et plus</span>
+    <span data-lang="pt" class="active">Seu guarda-costas digital contra vazamentos de dados</span>
+    <span data-lang="en">Your digital bodyguard against data leaks</span>
+    <span data-lang="es">Tu guardaespaldas digital contra fugas de datos</span>
+    <span data-lang="zh">您的数字保镖 — 防止数据泄露</span>
+    <span data-lang="hi">डेटा लीक के खिलाफ आपका डिजिटल बॉडीगार्ड</span>
+    <span data-lang="fr">Votre garde du corps numerique contre les fuites de donnees</span>
   </div>
 
   <h1>
-    <span data-lang="pt" class="active">Use qualquer IA com <em>privacidade total</em> dos seus dados</span>
-    <span data-lang="en">Use AI with <em>complete privacy</em> of your data</span>
-    <span data-lang="es">Usa IA con <em>privacidad total</em> de tus datos</span>
-    <span data-lang="zh">使用 AI，<em>完全保护</em>您的数据隐私</span>
-    <span data-lang="hi">AI का उपयोग करें, अपने डेटा की <em>पूर्ण गोपनीयता</em> के साथ</span>
-    <span data-lang="fr">Utilisez l'IA avec une <em>confidentialité totale</em> de vos données</span>
+    <span data-lang="pt" class="active">Seus dados <em>nunca saem</em> do seu computador</span>
+    <span data-lang="en">Your data <em>never leaves</em> your computer</span>
+    <span data-lang="es">Tus datos <em>nunca salen</em> de tu computador</span>
+    <span data-lang="zh">您的数据<em>永远不会离开</em>您的电脑</span>
+    <span data-lang="hi">आपका डेटा आपके कंप्यूटर से <em>कभी बाहर नहीं जाता</em></span>
+    <span data-lang="fr">Vos donnees ne <em>quittent jamais</em> votre ordinateur</span>
   </h1>
 
   <p class="hero-desc">
-    <span data-lang="pt" class="active">O PSA — Privacy Shield Agent é uma camada de proteção que anonimiza dados sensíveis <strong style="color:var(--text);font-weight:500">antes</strong> de enviá-los à nuvem. CPFs, nomes, e-mails e 70+ padrões protegidos — invisíveis para qualquer IA.</span>
-    <span data-lang="en">PSA — Privacy Shield Agent is a protection layer that anonymizes sensitive data <strong style="color:var(--text);font-weight:500">before</strong> sending it to the cloud. Tax IDs, names, emails and 70+ patterns protected — invisible to any AI.</span>
-    <span data-lang="es">PSA — Privacy Shield Agent es una capa de protección que anonimiza datos sensibles <strong style="color:var(--text);font-weight:500">antes</strong> de enviarlos a la nube. DNIs, nombres, correos y 70+ patrones protegidos — invisibles para cualquier IA.</span>
-    <span data-lang="zh">PSA — Privacy Shield Agent 是一个保护层，在将敏感数据发送到云端<strong style="color:var(--text);font-weight:500">之前</strong>对其进行匿名处理。税务号、姓名、电子邮件和 70+ 模式受到保护——对任何 AI 不可见。</span>
-    <span data-lang="hi">PSA — Privacy Shield Agent एक सुरक्षा परत है जो संवेदनशील डेटा को क्लाउड पर भेजने से <strong style="color:var(--text);font-weight:500">पहले</strong> अनामीकृत करती है। टैक्स ID, नाम, ईमेल और 70+ पैटर्न सुरक्षित — किसी भी AI के लिए अदृश्य।</span>
-    <span data-lang="fr">PSA — Privacy Shield Agent est une couche de protection qui anonymise les données sensibles <strong style="color:var(--text);font-weight:500">avant</strong> de les envoyer dans le cloud. N° fiscaux, noms, e-mails et 70+ modèles protégés — invisibles pour toute IA.</span>
+    <span data-lang="pt" class="active">PSA nao e uma ferramenta de produtividade. E uma <strong>camada de seguranca</strong> que, como consequencia, tambem economiza 99% dos tokens e torna qualquer analise 30x mais rapida.</span>
+    <span data-lang="en">PSA is not a productivity tool. It's a <strong>security layer</strong> that, as a consequence, also saves 99% of tokens and makes any analysis 30x faster.</span>
+    <span data-lang="es">PSA no es una herramienta de productividad. Es una <strong>capa de seguridad</strong> que, como consecuencia, tambien ahorra 99% de los tokens y hace cualquier analisis 30x mas rapido.</span>
+    <span data-lang="zh">PSA 不是生产力工具。它是一个<strong>安全层</strong>，作为结果，还能节省 99% 的 token 并使任何分析速度提高 30 倍。</span>
+    <span data-lang="hi">PSA एक उत्पादकता उपकरण नहीं है। यह एक <strong>सुरक्षा परत</strong> है जो, परिणामस्वरूप, 99% टोकन भी बचाती है और किसी भी विश्लेषण को 30 गुना तेज बनाती है।</span>
+    <span data-lang="fr">PSA n'est pas un outil de productivite. C'est une <strong>couche de securite</strong> qui, par consequence, economise aussi 99% des tokens et rend toute analyse 30x plus rapide.</span>
   </p>
 
   <div class="waitlist">
@@ -454,13 +678,13 @@
       </button>
     </div>
     <div class="waitlist-success" id="successMsg">
-      <span>✓</span>
-      <span data-lang="pt" class="active">Recebido! Te avisamos quando lançar.</span>
+      <span>&#10003;</span>
+      <span data-lang="pt" class="active">Recebido! Te avisamos quando lancar.</span>
       <span data-lang="en">Got it! We'll notify you at launch.</span>
-      <span data-lang="es">¡Recibido! Te avisamos en el lanzamiento.</span>
+      <span data-lang="es">Recibido! Te avisamos en el lanzamiento.</span>
       <span data-lang="zh">已收到！发布时我们会通知您。</span>
       <span data-lang="hi">प्राप्त! लॉन्च पर सूचित करेंगे।</span>
-      <span data-lang="fr">Reçu ! Nous vous informerons au lancement.</span>
+      <span data-lang="fr">Recu ! Nous vous informerons au lancement.</span>
     </div>
     <p class="waitlist-note">
       <span data-lang="pt" class="active">Sem spam. Apenas novidades do PSA.</span>
@@ -468,39 +692,288 @@
       <span data-lang="es">Sin spam. Solo novedades del PSA.</span>
       <span data-lang="zh">无垃圾邮件。仅 PSA 更新。</span>
       <span data-lang="hi">कोई स्पैम नहीं। केवल PSA अपडेट।</span>
-      <span data-lang="fr">Pas de spam. Nouveautés PSA uniquement.</span>
+      <span data-lang="fr">Pas de spam. Nouveautes PSA uniquement.</span>
     </p>
   </div>
 
   <a class="github-link" href="https://github.com/myrkis-br/psa-privacy-shield-agent-for-ai" target="_blank">
     <svg viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
-    <span data-lang="pt" class="active">Ver código no GitHub</span>
+    <span data-lang="pt" class="active">Ver codigo no GitHub</span>
     <span data-lang="en">View code on GitHub</span>
-    <span data-lang="es">Ver código en GitHub</span>
+    <span data-lang="es">Ver codigo en GitHub</span>
     <span data-lang="zh">在 GitHub 查看代码</span>
     <span data-lang="hi">GitHub पर कोड देखें</span>
     <span data-lang="fr">Voir le code sur GitHub</span>
   </a>
 
   <div class="pills">
-    <span class="pill"><strong>100/100</strong> <span data-lang="pt" class="active">auditoria</span><span data-lang="en">audit</span><span data-lang="es">auditoría</span><span data-lang="zh">审计</span><span data-lang="hi">ऑडिट</span><span data-lang="fr">audit</span></span>
-    <span class="pill"><strong>70+</strong> PII <span data-lang="pt" class="active">padrões</span><span data-lang="en">patterns</span><span data-lang="es">patrones</span><span data-lang="zh">模式</span><span data-lang="hi">पैटर्न</span><span data-lang="fr">modèles</span></span>
+    <span class="pill"><strong>100/100</strong> <span data-lang="pt" class="active">auditoria</span><span data-lang="en">audit</span><span data-lang="es">auditoria</span><span data-lang="zh">审计</span><span data-lang="hi">ऑडिट</span><span data-lang="fr">audit</span></span>
+    <span class="pill"><strong>70+</strong> PII <span data-lang="pt" class="active">padroes</span><span data-lang="en">patterns</span><span data-lang="es">patrones</span><span data-lang="zh">模式</span><span data-lang="hi">पैटर्न</span><span data-lang="fr">modeles</span></span>
     <span class="pill"><strong>0</strong> <span data-lang="pt" class="active">vazamentos</span><span data-lang="en">leaks</span><span data-lang="es">filtraciones</span><span data-lang="zh">泄露</span><span data-lang="hi">लीक</span><span data-lang="fr">fuites</span></span>
     <span class="pill"><strong>11</strong> <span data-lang="pt" class="active">formatos</span><span data-lang="en">formats</span><span data-lang="es">formatos</span><span data-lang="zh">格式</span><span data-lang="hi">प्रारूप</span><span data-lang="fr">formats</span></span>
     <span class="pill">LGPD / GDPR</span>
-    <span class="pill">Python · Open Source</span>
+    <span class="pill">Python &middot; Open Source</span>
   </div>
 </main>
 
+<!-- ====== OS 4 MEDOS ====== -->
+<section class="fears-section">
+  <div class="fears-headline">
+    <h2>
+      <span data-lang="pt" class="active">Os 4 medos de quem usa IA com <em>dados reais</em></span>
+      <span data-lang="en">The 4 fears of using AI with <em>real data</em></span>
+      <span data-lang="es">Los 4 miedos de usar IA con <em>datos reales</em></span>
+      <span data-lang="zh">使用 AI 处理<em>真实数据</em>的 4 大恐惧</span>
+      <span data-lang="hi">AI के साथ <em>असली डेटा</em> उपयोग करने के 4 डर</span>
+      <span data-lang="fr">Les 4 peurs d'utiliser l'IA avec des <em>donnees reelles</em></span>
+    </h2>
+    <p class="fears-subtitle">
+      <span data-lang="pt" class="active">Cada um desses riscos e real, documentado e pode custar milhoes. O PSA resolve todos.</span>
+      <span data-lang="en">Each of these risks is real, documented, and can cost millions. PSA solves them all.</span>
+      <span data-lang="es">Cada uno de estos riesgos es real, documentado y puede costar millones. PSA los resuelve todos.</span>
+      <span data-lang="zh">这些风险都是真实的、有据可查的，可能造成数百万损失。PSA 全部解决。</span>
+      <span data-lang="hi">इनमें से प्रत्येक जोखिम वास्तविक, प्रलेखित है और लाखों की लागत हो सकती है। PSA सभी को हल करता है।</span>
+      <span data-lang="fr">Chacun de ces risques est reel, documente et peut couter des millions. PSA les resout tous.</span>
+    </p>
+  </div>
+
+  <div class="fears-grid">
+    <!-- Fear 1: Data Leak -->
+    <div class="fear-card fear-leak">
+      <span class="fear-icon">&#128561;</span>
+      <div class="fear-title">
+        <span data-lang="pt" class="active">Vazamento de dados</span>
+        <span data-lang="en">Data leaks</span>
+        <span data-lang="es">Fuga de datos</span>
+        <span data-lang="zh">数据泄露</span>
+        <span data-lang="hi">डेटा लीक</span>
+        <span data-lang="fr">Fuite de donnees</span>
+      </div>
+      <div class="fear-risk">
+        <span data-lang="pt" class="active">CPF, salario, endereco vao para servidores externos sem voce saber.</span>
+        <span data-lang="en">Tax IDs, salaries, addresses go to external servers without you knowing.</span>
+        <span data-lang="es">DNI, salario, direccion van a servidores externos sin que lo sepas.</span>
+        <span data-lang="zh">税号、工资、地址在您不知情的情况下发送到外部服务器。</span>
+        <span data-lang="hi">टैक्स ID, वेतन, पते बिना आपकी जानकारी के बाहरी सर्वर पर जाते हैं।</span>
+        <span data-lang="fr">N. fiscaux, salaires, adresses partent vers des serveurs externes a votre insu.</span>
+      </div>
+      <div class="fear-solution">
+        <span data-lang="pt" class="active">PSA: dados reais nunca saem do seu computador</span>
+        <span data-lang="en">PSA: real data never leaves your computer</span>
+        <span data-lang="es">PSA: los datos reales nunca salen de tu computador</span>
+        <span data-lang="zh">PSA：真实数据永远不会离开您的电脑</span>
+        <span data-lang="hi">PSA: असली डेटा कभी आपके कंप्यूटर से बाहर नहीं जाता</span>
+        <span data-lang="fr">PSA : les donnees reelles ne quittent jamais votre ordinateur</span>
+      </div>
+    </div>
+
+    <!-- Fear 2: LGPD/GDPR Fine -->
+    <div class="fear-card fear-fine">
+      <span class="fear-icon">&#9878;&#65039;</span>
+      <div class="fear-title">
+        <span data-lang="pt" class="active">Multa LGPD / GDPR</span>
+        <span data-lang="en">LGPD / GDPR fines</span>
+        <span data-lang="es">Multa LGPD / GDPR</span>
+        <span data-lang="zh">LGPD / GDPR 罚款</span>
+        <span data-lang="hi">LGPD / GDPR जुर्माना</span>
+        <span data-lang="fr">Amende LGPD / GDPR</span>
+      </div>
+      <div class="fear-risk">
+        <span data-lang="pt" class="active">ANPD pode multar ate 2% do faturamento. GDPR ate 20 milhoes de euros.</span>
+        <span data-lang="en">ANPD can fine up to 2% of revenue. GDPR up to 20 million euros.</span>
+        <span data-lang="es">ANPD puede multar hasta 2% de la facturacion. GDPR hasta 20 millones de euros.</span>
+        <span data-lang="zh">ANPD 可罚款高达营收的 2%。GDPR 可罚款高达 2000 万欧元。</span>
+        <span data-lang="hi">ANPD राजस्व का 2% तक जुर्माना लगा सकता है। GDPR 2 करोड़ यूरो तक।</span>
+        <span data-lang="fr">L'ANPD peut infliger des amendes jusqu'a 2% du CA. GDPR jusqu'a 20 millions d'euros.</span>
+      </div>
+      <div class="fear-solution">
+        <span data-lang="pt" class="active">PSA: compliance automatico + log auditavel</span>
+        <span data-lang="en">PSA: automatic compliance + auditable log</span>
+        <span data-lang="es">PSA: compliance automatico + log auditable</span>
+        <span data-lang="zh">PSA：自动合规 + 可审计日志</span>
+        <span data-lang="hi">PSA: स्वचालित अनुपालन + ऑडिट योग्य लॉग</span>
+        <span data-lang="fr">PSA : conformite automatique + journal auditable</span>
+      </div>
+    </div>
+
+    <!-- Fear 3: Industrial Secret -->
+    <div class="fear-card fear-secret">
+      <span class="fear-icon">&#127981;</span>
+      <div class="fear-title">
+        <span data-lang="pt" class="active">Segredo industrial</span>
+        <span data-lang="en">Industrial secrets</span>
+        <span data-lang="es">Secreto industrial</span>
+        <span data-lang="zh">商业机密</span>
+        <span data-lang="hi">औद्योगिक रहस्य</span>
+        <span data-lang="fr">Secret industriel</span>
+      </div>
+      <div class="fear-risk">
+        <span data-lang="pt" class="active">Precos, margens, clientes VIP vao a nuvem e ficam expostos.</span>
+        <span data-lang="en">Prices, margins, VIP clients go to the cloud and get exposed.</span>
+        <span data-lang="es">Precios, margenes, clientes VIP van a la nube y quedan expuestos.</span>
+        <span data-lang="zh">价格、利润率、VIP 客户上传到云端并被暴露。</span>
+        <span data-lang="hi">कीमतें, मार्जिन, VIP ग्राहक क्लाउड पर जाते हैं और उजागर होते हैं।</span>
+        <span data-lang="fr">Prix, marges, clients VIP partent dans le cloud et sont exposes.</span>
+      </div>
+      <div class="fear-solution">
+        <span data-lang="pt" class="active">PSA: so dados ficticios chegam a nuvem</span>
+        <span data-lang="en">PSA: only fictitious data reaches the cloud</span>
+        <span data-lang="es">PSA: solo datos ficticios llegan a la nube</span>
+        <span data-lang="zh">PSA：只有虚构数据到达云端</span>
+        <span data-lang="hi">PSA: केवल काल्पनिक डेटा क्लाउड तक पहुंचता है</span>
+        <span data-lang="fr">PSA : seules des donnees fictives atteignent le cloud</span>
+      </div>
+    </div>
+
+    <!-- Fear 4: Training Competitors -->
+    <div class="fear-card fear-training">
+      <span class="fear-icon">&#129302;</span>
+      <div class="fear-title">
+        <span data-lang="pt" class="active">Dados treinando concorrentes</span>
+        <span data-lang="en">Data training competitors</span>
+        <span data-lang="es">Datos entrenando competidores</span>
+        <span data-lang="zh">数据训练竞争对手</span>
+        <span data-lang="hi">डेटा प्रतिस्पर्धियों को प्रशिक्षित कर रहा है</span>
+        <span data-lang="fr">Donnees entrainant des concurrents</span>
+      </div>
+      <div class="fear-risk">
+        <span data-lang="pt" class="active">Termos de uso podem usar seus dados para treinar modelos de IA.</span>
+        <span data-lang="en">Terms of use may use your data to train AI models.</span>
+        <span data-lang="es">Los terminos de uso pueden usar tus datos para entrenar modelos de IA.</span>
+        <span data-lang="zh">使用条款可能会将您的数据用于训练 AI 模型。</span>
+        <span data-lang="hi">उपयोग की शर्तें आपके डेटा का उपयोग AI मॉडल को प्रशिक्षित करने के लिए कर सकती हैं।</span>
+        <span data-lang="fr">Les conditions d'utilisation peuvent utiliser vos donnees pour entrainer des modeles IA.</span>
+      </div>
+      <div class="fear-solution">
+        <span data-lang="pt" class="active">PSA: nenhum dado real alimenta nenhum modelo</span>
+        <span data-lang="en">PSA: no real data feeds any model</span>
+        <span data-lang="es">PSA: ningun dato real alimenta ningun modelo</span>
+        <span data-lang="zh">PSA：没有真实数据用于训练任何模型</span>
+        <span data-lang="hi">PSA: कोई भी असली डेटा किसी मॉडल को फीड नहीं करता</span>
+        <span data-lang="fr">PSA : aucune donnee reelle n'alimente aucun modele</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ====== COMPLIANCE BADGES ====== -->
+<section class="compliance-section">
+  <div class="compliance-badges">
+    <span class="compliance-pill">&#10003; LGPD</span>
+    <span class="compliance-pill">&#10003; GDPR</span>
+    <span class="compliance-pill">&#10003; HIPAA</span>
+    <span class="compliance-pill">
+      <span data-lang="pt" class="active">&#10003; Sigilo profissional</span>
+      <span data-lang="en">&#10003; Professional secrecy</span>
+      <span data-lang="es">&#10003; Sigilo profesional</span>
+      <span data-lang="zh">&#10003; 职业保密</span>
+      <span data-lang="hi">&#10003; व्यावसायिक गोपनीयता</span>
+      <span data-lang="fr">&#10003; Secret professionnel</span>
+    </span>
+    <span class="compliance-pill">
+      <span data-lang="pt" class="active">&#10003; Segredo industrial</span>
+      <span data-lang="en">&#10003; Trade secret</span>
+      <span data-lang="es">&#10003; Secreto industrial</span>
+      <span data-lang="zh">&#10003; 商业机密</span>
+      <span data-lang="hi">&#10003; व्यापार रहस्य</span>
+      <span data-lang="fr">&#10003; Secret industriel</span>
+    </span>
+  </div>
+
+  <!-- Real Case Callout -->
+  <div class="case-callout">
+    <div class="case-callout-label">
+      <span data-lang="pt" class="active">Caso real</span>
+      <span data-lang="en">Real case</span>
+      <span data-lang="es">Caso real</span>
+      <span data-lang="zh">真实案例</span>
+      <span data-lang="hi">वास्तविक मामला</span>
+      <span data-lang="fr">Cas reel</span>
+    </div>
+    <div class="case-callout-text">
+      <span data-lang="pt" class="active">Testado com <strong>256.013 servidores do GDF</strong> — <em>zero vazamentos</em> — auditoria <strong>100/100</strong></span>
+      <span data-lang="en">Tested with <strong>256,013 GDF civil servants</strong> — <em>zero leaks</em> — audit score <strong>100/100</strong></span>
+      <span data-lang="es">Probado con <strong>256.013 servidores del GDF</strong> — <em>cero fugas</em> — auditoria <strong>100/100</strong></span>
+      <span data-lang="zh">使用 <strong>256,013 名 GDF 公务员</strong>数据测试 — <em>零泄露</em> — 审计评分 <strong>100/100</strong></span>
+      <span data-lang="hi"><strong>256,013 GDF सिविल सेवकों</strong> के साथ परीक्षित — <em>शून्य लीक</em> — ऑडिट स्कोर <strong>100/100</strong></span>
+      <span data-lang="fr">Teste avec <strong>256 013 fonctionnaires du GDF</strong> — <em>zero fuite</em> — audit <strong>100/100</strong></span>
+    </div>
+  </div>
+</section>
+
+<!-- ====== BENEFICIOS ADICIONAIS ====== -->
+<section class="benefits-section">
+  <div class="benefits-headline">
+    <h2>
+      <span data-lang="pt" class="active">Beneficios <em>adicionais</em></span>
+      <span data-lang="en">Additional <em>benefits</em></span>
+      <span data-lang="es">Beneficios <em>adicionales</em></span>
+      <span data-lang="zh"><em>额外</em>好处</span>
+      <span data-lang="hi">अतिरिक्त <em>लाभ</em></span>
+      <span data-lang="fr">Avantages <em>supplementaires</em></span>
+    </h2>
+  </div>
+  <p class="benefits-note">
+    <span data-lang="pt" class="active">Consequencias naturais da protecao. Nao o produto principal.</span>
+    <span data-lang="en">Natural consequences of protection. Not the main product.</span>
+    <span data-lang="es">Consecuencias naturales de la proteccion. No el producto principal.</span>
+    <span data-lang="zh">保护的自然结果。不是主要产品。</span>
+    <span data-lang="hi">सुरक्षा के प्राकृतिक परिणाम। मुख्य उत्पाद नहीं।</span>
+    <span data-lang="fr">Consequences naturelles de la protection. Pas le produit principal.</span>
+  </p>
+
+  <div class="benefits-grid">
+    <div class="benefit-card">
+      <div class="benefit-number">99,96%</div>
+      <div class="benefit-label">
+        <span data-lang="pt" class="active">economia de tokens</span>
+        <span data-lang="en">token savings</span>
+        <span data-lang="es">ahorro de tokens</span>
+        <span data-lang="zh">token 节省</span>
+        <span data-lang="hi">टोकन बचत</span>
+        <span data-lang="fr">economie de tokens</span>
+      </div>
+      <div class="benefit-desc">
+        <span data-lang="pt" class="active">Ao proteger seus dados, o PSA envia apenas 100 linhas — economizando ate 99,96% dos tokens.</span>
+        <span data-lang="en">By protecting your data, PSA sends only 100 rows — saving up to 99.96% of tokens.</span>
+        <span data-lang="es">Al proteger tus datos, PSA envia solo 100 filas — ahorrando hasta 99,96% de los tokens.</span>
+        <span data-lang="zh">通过保护您的数据，PSA 仅发送 100 行 — 节省高达 99.96% 的 token。</span>
+        <span data-lang="hi">आपके डेटा की सुरक्षा करके, PSA केवल 100 पंक्तियां भेजता है — 99.96% तक टोकन बचाता है।</span>
+        <span data-lang="fr">En protegeant vos donnees, PSA n'envoie que 100 lignes — economisant jusqu'a 99,96% des tokens.</span>
+      </div>
+    </div>
+    <div class="benefit-card">
+      <div class="benefit-number">30x</div>
+      <div class="benefit-label">
+        <span data-lang="pt" class="active">mais rapido</span>
+        <span data-lang="en">faster</span>
+        <span data-lang="es">mas rapido</span>
+        <span data-lang="zh">更快</span>
+        <span data-lang="hi">तेज</span>
+        <span data-lang="fr">plus rapide</span>
+      </div>
+      <div class="benefit-desc">
+        <span data-lang="pt" class="active">Como a amostra e minima, analises de 15 min viram 30 segundos.</span>
+        <span data-lang="en">Since the sample is minimal, 15-min analyses become 30 seconds.</span>
+        <span data-lang="es">Como la muestra es minima, analisis de 15 min se convierten en 30 segundos.</span>
+        <span data-lang="zh">由于样本极小，15 分钟的分析变成 30 秒。</span>
+        <span data-lang="hi">चूंकि नमूना न्यूनतम है, 15 मिनट के विश्लेषण 30 सेकंड में हो जाते हैं।</span>
+        <span data-lang="fr">Comme l'echantillon est minimal, les analyses de 15 min deviennent 30 secondes.</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ====== 19 PASSOS (UNCHANGED) ====== -->
 <section class="steps-section">
   <div class="steps-headline">
     <h2>
       <span data-lang="pt" class="active">Como funciona — <em>Os 19 Passos</em></span>
       <span data-lang="en">How it works — <em>The 19 Steps</em></span>
-      <span data-lang="es">Cómo funciona — <em>Los 19 Pasos</em></span>
+      <span data-lang="es">Como funciona — <em>Los 19 Pasos</em></span>
       <span data-lang="zh">工作原理 — <em>19 个步骤</em></span>
       <span data-lang="hi">यह कैसे काम करता है — <em>19 कदम</em></span>
-      <span data-lang="fr">Comment ça marche — <em>Les 19 étapes</em></span>
+      <span data-lang="fr">Comment ca marche — <em>Les 19 etapes</em></span>
     </h2>
   </div>
   <div class="steps-callout">
@@ -510,15 +983,15 @@
       <span data-lang="es"><strong>15 de 19 pasos se ejecutan 100% local. Sus datos reales nunca salen de su computador.</strong></span>
       <span data-lang="zh"><strong>19 个步骤中有 15 个 100% 在本地运行。您的真实数据永远不会离开您的计算机。</strong></span>
       <span data-lang="hi"><strong>19 में से 15 कदम 100% स्थानीय रूप से चलते हैं। आपका वास्तविक डेटा कभी भी आपके कंप्यूटर से बाहर नहीं जाता।</strong></span>
-      <span data-lang="fr"><strong>15 des 19 étapes s'exécutent 100% en local. Vos données réelles ne quittent jamais votre ordinateur.</strong></span>
+      <span data-lang="fr"><strong>15 des 19 etapes s'executent 100% en local. Vos donnees reelles ne quittent jamais votre ordinateur.</strong></span>
     </p>
     <p>
-      <span data-lang="pt" class="active"><strong>Nem o nome do seu arquivo sai do computador. Seus dados começam protegidos do primeiro ao último passo.</strong></span>
+      <span data-lang="pt" class="active"><strong>Nem o nome do seu arquivo sai do computador. Seus dados comecam protegidos do primeiro ao ultimo passo.</strong></span>
       <span data-lang="en"><strong>Not even your file name leaves the computer. Your data is protected from the first to the last step.</strong></span>
-      <span data-lang="es"><strong>Ni el nombre de su archivo sale del computador. Sus datos están protegidos del primer al último paso.</strong></span>
+      <span data-lang="es"><strong>Ni el nombre de su archivo sale del computador. Sus datos estan protegidos del primer al ultimo paso.</strong></span>
       <span data-lang="zh"><strong>连您的文件名都不会离开计算机。您的数据从第一步到最后一步都受到保护。</strong></span>
       <span data-lang="hi"><strong>आपकी फ़ाइल का नाम भी कंप्यूटर से बाहर नहीं जाता। आपका डेटा पहले से आखिरी कदम तक सुरक्षित है।</strong></span>
-      <span data-lang="fr"><strong>Même le nom de votre fichier ne quitte pas l'ordinateur. Vos données sont protégées de la première à la dernière étape.</strong></span>
+      <span data-lang="fr"><strong>Meme le nom de votre fichier ne quitte pas l'ordinateur. Vos donnees sont protegees de la premiere a la derniere etape.</strong></span>
     </p>
   </div>
 
@@ -529,7 +1002,7 @@
         <th>
           <span data-lang="pt" class="active">O que acontece</span>
           <span data-lang="en">What happens</span>
-          <span data-lang="es">Qué sucede</span>
+          <span data-lang="es">Que sucede</span>
           <span data-lang="zh">发生了什么</span>
           <span data-lang="hi">क्या होता है</span>
           <span data-lang="fr">Ce qui se passe</span>
@@ -537,10 +1010,10 @@
         <th>
           <span data-lang="pt" class="active">Onde</span>
           <span data-lang="en">Where</span>
-          <span data-lang="es">Dónde</span>
+          <span data-lang="es">Donde</span>
           <span data-lang="zh">位置</span>
           <span data-lang="hi">कहाँ</span>
-          <span data-lang="fr">Où</span>
+          <span data-lang="fr">Ou</span>
         </th>
         <th>Token?</th>
         <th>
@@ -549,7 +1022,7 @@
           <span data-lang="es">Salen datos?</span>
           <span data-lang="zh">数据外泄?</span>
           <span data-lang="hi">डेटा बाहर?</span>
-          <span data-lang="fr">Données sortent?</span>
+          <span data-lang="fr">Donnees sortent?</span>
         </th>
       </tr>
     </thead>
@@ -557,107 +1030,107 @@
       <tr class="step-local">
         <td class="step-num">1</td>
         <td>
-          <span data-lang="pt" class="active">Usuário entrega o arquivo ao PSA</span>
+          <span data-lang="pt" class="active">Usuario entrega o arquivo ao PSA</span>
           <span data-lang="en">User delivers file to PSA</span>
           <span data-lang="es">Usuario entrega archivo al PSA</span>
           <span data-lang="zh">用户将文件交给 PSA</span>
           <span data-lang="hi">उपयोगकर्ता PSA को फ़ाइल देता है</span>
           <span data-lang="fr">L'utilisateur remet le fichier au PSA</span>
         </td>
-        <td class="step-where">💻 Local</td>
-        <td class="step-icon">❌</td>
+        <td class="step-where">&#128187; Local</td>
+        <td class="step-icon">&#10060;</td>
         <td>
-          <span data-lang="pt" class="active">❌ Não — nome protegido por código (DOC_001)</span>
-          <span data-lang="en">❌ No — name protected by code (DOC_001)</span>
-          <span data-lang="es">❌ No — nombre protegido por código (DOC_001)</span>
-          <span data-lang="zh">❌ 否 — 文件名由代码保护 (DOC_001)</span>
-          <span data-lang="hi">❌ नहीं — नाम कोड द्वारा सुरक्षित (DOC_001)</span>
-          <span data-lang="fr">❌ Non — nom protégé par code (DOC_001)</span>
+          <span data-lang="pt" class="active">&#10060; Nao — nome protegido por codigo (DOC_001)</span>
+          <span data-lang="en">&#10060; No — name protected by code (DOC_001)</span>
+          <span data-lang="es">&#10060; No — nombre protegido por codigo (DOC_001)</span>
+          <span data-lang="zh">&#10060; 否 — 文件名由代码保护 (DOC_001)</span>
+          <span data-lang="hi">&#10060; नहीं — नाम कोड द्वारा सुरक्षित (DOC_001)</span>
+          <span data-lang="fr">&#10060; Non — nom protege par code (DOC_001)</span>
         </td>
       </tr>
       <tr class="step-local">
         <td class="step-num">2</td>
         <td>
-          <span data-lang="pt" class="active">PSA invoca o psa.py via código genérico</span>
+          <span data-lang="pt" class="active">PSA invoca o psa.py via codigo generico</span>
           <span data-lang="en">PSA invokes psa.py via generic code</span>
-          <span data-lang="es">PSA invoca psa.py vía código genérico</span>
+          <span data-lang="es">PSA invoca psa.py via codigo generico</span>
           <span data-lang="zh">PSA 通过通用代码调用 psa.py</span>
           <span data-lang="hi">PSA जेनेरिक कोड के माध्यम से psa.py चलाता है</span>
-          <span data-lang="fr">PSA invoque psa.py via code générique</span>
+          <span data-lang="fr">PSA invoque psa.py via code generique</span>
         </td>
-        <td class="step-where">💻 Local</td>
-        <td class="step-icon">❌</td>
-        <td class="step-icon">❌</td>
+        <td class="step-where">&#128187; Local</td>
+        <td class="step-icon">&#10060;</td>
+        <td class="step-icon">&#10060;</td>
       </tr>
       <tr class="step-local">
         <td class="step-num">3</td>
         <td>
-          <span data-lang="pt" class="active">Valida segurança do arquivo</span>
+          <span data-lang="pt" class="active">Valida seguranca do arquivo</span>
           <span data-lang="en">Validates file security</span>
           <span data-lang="es">Valida seguridad del archivo</span>
           <span data-lang="zh">验证文件安全性</span>
           <span data-lang="hi">फ़ाइल सुरक्षा मान्य करता है</span>
-          <span data-lang="fr">Valide la sécurité du fichier</span>
+          <span data-lang="fr">Valide la securite du fichier</span>
         </td>
-        <td class="step-where">💻 Local</td>
-        <td class="step-icon">❌</td>
-        <td class="step-icon">❌</td>
+        <td class="step-where">&#128187; Local</td>
+        <td class="step-icon">&#10060;</td>
+        <td class="step-icon">&#10060;</td>
       </tr>
       <tr class="step-local">
         <td class="step-num">4</td>
         <td>
-          <span data-lang="pt" class="active">Detecta extensão e escolhe script correto</span>
+          <span data-lang="pt" class="active">Detecta extensao e escolhe script correto</span>
           <span data-lang="en">Detects extension and picks correct script</span>
-          <span data-lang="es">Detecta extensión y elige script correcto</span>
+          <span data-lang="es">Detecta extension y elige script correcto</span>
           <span data-lang="zh">检测扩展名并选择正确的脚本</span>
           <span data-lang="hi">एक्सटेंशन पहचानता है और सही स्क्रिप्ट चुनता है</span>
-          <span data-lang="fr">Détecte l'extension et choisit le script</span>
+          <span data-lang="fr">Detecte l'extension et choisit le script</span>
         </td>
-        <td class="step-where">💻 Local</td>
-        <td class="step-icon">❌</td>
-        <td class="step-icon">❌</td>
+        <td class="step-where">&#128187; Local</td>
+        <td class="step-icon">&#10060;</td>
+        <td class="step-icon">&#10060;</td>
       </tr>
       <tr class="step-local">
         <td class="step-num">5</td>
         <td>
-          <span data-lang="pt" class="active">Lê o arquivo real do disco</span>
+          <span data-lang="pt" class="active">Le o arquivo real do disco</span>
           <span data-lang="en">Reads the real file from disk</span>
           <span data-lang="es">Lee el archivo real del disco</span>
           <span data-lang="zh">从磁盘读取真实文件</span>
           <span data-lang="hi">डिस्क से असली फ़ाइल पढ़ता है</span>
-          <span data-lang="fr">Lit le fichier réel du disque</span>
+          <span data-lang="fr">Lit le fichier reel du disque</span>
         </td>
-        <td class="step-where">💻 Local</td>
-        <td class="step-icon">❌</td>
-        <td class="step-icon">❌</td>
+        <td class="step-where">&#128187; Local</td>
+        <td class="step-icon">&#10060;</td>
+        <td class="step-icon">&#10060;</td>
       </tr>
       <tr class="step-local">
         <td class="step-num">6</td>
         <td>
-          <span data-lang="pt" class="active">Faz amostragem (padrão: 100 linhas)</span>
+          <span data-lang="pt" class="active">Faz amostragem (padrao: 100 linhas)</span>
           <span data-lang="en">Samples data (default: 100 rows)</span>
-          <span data-lang="es">Hace muestreo (predeterminado: 100 líneas)</span>
+          <span data-lang="es">Hace muestreo (predeterminado: 100 lineas)</span>
           <span data-lang="zh">数据采样（默认：100 行）</span>
           <span data-lang="hi">नमूना लेता है (डिफ़ॉल्ट: 100 पंक्तियाँ)</span>
-          <span data-lang="fr">Échantillonne (défaut : 100 lignes)</span>
+          <span data-lang="fr">Echantillonne (defaut : 100 lignes)</span>
         </td>
-        <td class="step-where">💻 Local</td>
-        <td class="step-icon">❌</td>
-        <td class="step-icon">❌</td>
+        <td class="step-where">&#128187; Local</td>
+        <td class="step-icon">&#10060;</td>
+        <td class="step-icon">&#10060;</td>
       </tr>
       <tr class="step-local">
         <td class="step-num">7</td>
         <td>
-          <span data-lang="pt" class="active">Detecta colunas sensíveis (70+ keywords)</span>
+          <span data-lang="pt" class="active">Detecta colunas sensiveis (70+ keywords)</span>
           <span data-lang="en">Detects sensitive columns (70+ keywords)</span>
           <span data-lang="es">Detecta columnas sensibles (70+ keywords)</span>
           <span data-lang="zh">检测敏感列（70+ 关键词）</span>
           <span data-lang="hi">संवेदनशील कॉलम पहचानता है (70+ कीवर्ड)</span>
-          <span data-lang="fr">Détecte colonnes sensibles (70+ mots-clés)</span>
+          <span data-lang="fr">Detecte colonnes sensibles (70+ mots-cles)</span>
         </td>
-        <td class="step-where">💻 Local</td>
-        <td class="step-icon">❌</td>
-        <td class="step-icon">❌</td>
+        <td class="step-where">&#128187; Local</td>
+        <td class="step-icon">&#10060;</td>
+        <td class="step-icon">&#10060;</td>
       </tr>
       <tr class="step-local">
         <td class="step-num">8</td>
@@ -669,9 +1142,9 @@
           <span data-lang="hi">कॉलम का नाम COL_A, COL_B... में बदलता है</span>
           <span data-lang="fr">Renomme les colonnes en COL_A, COL_B...</span>
         </td>
-        <td class="step-where">💻 Local</td>
-        <td class="step-icon">❌</td>
-        <td class="step-icon">❌</td>
+        <td class="step-where">&#128187; Local</td>
+        <td class="step-icon">&#10060;</td>
+        <td class="step-icon">&#10060;</td>
       </tr>
       <tr class="step-local">
         <td class="step-num">9</td>
@@ -683,51 +1156,51 @@
           <span data-lang="hi">Faker pt_BR ऑफ़लाइन से मान अनामीकृत करता है</span>
           <span data-lang="fr">Anonymise les valeurs avec Faker pt_BR hors ligne</span>
         </td>
-        <td class="step-where">💻 Local</td>
-        <td class="step-icon">❌</td>
-        <td class="step-icon">❌</td>
+        <td class="step-where">&#128187; Local</td>
+        <td class="step-icon">&#10060;</td>
+        <td class="step-icon">&#10060;</td>
       </tr>
       <tr class="step-local">
         <td class="step-num">10</td>
         <td>
-          <span data-lang="pt" class="active">Varia valores financeiros em ±15%</span>
-          <span data-lang="en">Varies financial values by ±15%</span>
-          <span data-lang="es">Varía valores financieros en ±15%</span>
-          <span data-lang="zh">将财务值变化 ±15%</span>
-          <span data-lang="hi">वित्तीय मूल्यों को ±15% तक बदलता है</span>
-          <span data-lang="fr">Varie les valeurs financières de ±15%</span>
+          <span data-lang="pt" class="active">Varia valores financeiros em +/-15%</span>
+          <span data-lang="en">Varies financial values by +/-15%</span>
+          <span data-lang="es">Varia valores financieros en +/-15%</span>
+          <span data-lang="zh">将财务值变化 +/-15%</span>
+          <span data-lang="hi">वित्तीय मूल्यों को +/-15% तक बदलता है</span>
+          <span data-lang="fr">Varie les valeurs financieres de +/-15%</span>
         </td>
-        <td class="step-where">💻 Local</td>
-        <td class="step-icon">❌</td>
-        <td class="step-icon">❌</td>
+        <td class="step-where">&#128187; Local</td>
+        <td class="step-icon">&#10060;</td>
+        <td class="step-icon">&#10060;</td>
       </tr>
       <tr class="step-local">
         <td class="step-num">11</td>
         <td>
           <span data-lang="pt" class="active">Escaneia textos livres e substitui via regex</span>
           <span data-lang="en">Scans free text and replaces via regex</span>
-          <span data-lang="es">Escanea textos libres y sustituye vía regex</span>
+          <span data-lang="es">Escanea textos libres y sustituye via regex</span>
           <span data-lang="zh">扫描自由文本并通过正则表达式替换</span>
           <span data-lang="hi">फ्री टेक्स्ट स्कैन करता है और regex से बदलता है</span>
           <span data-lang="fr">Scanne le texte libre et remplace via regex</span>
         </td>
-        <td class="step-where">💻 Local</td>
-        <td class="step-icon">❌</td>
-        <td class="step-icon">❌</td>
+        <td class="step-where">&#128187; Local</td>
+        <td class="step-icon">&#10060;</td>
+        <td class="step-icon">&#10060;</td>
       </tr>
       <tr class="step-local">
         <td class="step-num">12</td>
         <td>
-          <span data-lang="pt" class="active">Validação anti-vazamento — detectou dado real? Deleta tudo automaticamente</span>
+          <span data-lang="pt" class="active">Validacao anti-vazamento — detectou dado real? Deleta tudo automaticamente</span>
           <span data-lang="en">Anti-leak validation — real data detected? Deletes everything automatically</span>
-          <span data-lang="es">Validación anti-fuga — ¿detectó dato real? Elimina todo automáticamente</span>
+          <span data-lang="es">Validacion anti-fuga — detecto dato real? Elimina todo automaticamente</span>
           <span data-lang="zh">防泄漏验证 — 检测到真实数据？自动删除所有内容</span>
           <span data-lang="hi">एंटी-लीक सत्यापन — असली डेटा मिला? सब कुछ स्वचालित रूप से हटाता है</span>
-          <span data-lang="fr">Validation anti-fuite — donnée réelle détectée ? Supprime tout automatiquement</span>
+          <span data-lang="fr">Validation anti-fuite — donnee reelle detectee ? Supprime tout automatiquement</span>
         </td>
-        <td class="step-where">💻 Local</td>
-        <td class="step-icon">❌</td>
-        <td class="step-icon">❌</td>
+        <td class="step-where">&#128187; Local</td>
+        <td class="step-icon">&#10060;</td>
+        <td class="step-icon">&#10060;</td>
       </tr>
       <tr class="step-local">
         <td class="step-num">13</td>
@@ -737,80 +1210,80 @@
           <span data-lang="es">Guarda archivo anonimizado en data/anonymized/</span>
           <span data-lang="zh">将匿名文件保存到 data/anonymized/</span>
           <span data-lang="hi">अनामीकृत फ़ाइल data/anonymized/ में सहेजता है</span>
-          <span data-lang="fr">Enregistre le fichier anonymisé dans data/anonymized/</span>
+          <span data-lang="fr">Enregistre le fichier anonymise dans data/anonymized/</span>
         </td>
-        <td class="step-where">💻 Local</td>
-        <td class="step-icon">❌</td>
-        <td class="step-icon">❌</td>
+        <td class="step-where">&#128187; Local</td>
+        <td class="step-icon">&#10060;</td>
+        <td class="step-icon">&#10060;</td>
       </tr>
       <tr class="step-local">
         <td class="step-num">14</td>
         <td>
-          <span data-lang="pt" class="active">Salva mapa de correspondência em data/maps/</span>
+          <span data-lang="pt" class="active">Salva mapa de correspondencia em data/maps/</span>
           <span data-lang="en">Saves correspondence map to data/maps/</span>
           <span data-lang="es">Guarda mapa de correspondencia en data/maps/</span>
           <span data-lang="zh">将对应映射保存到 data/maps/</span>
           <span data-lang="hi">पत्राचार मानचित्र data/maps/ में सहेजता है</span>
           <span data-lang="fr">Enregistre la carte de correspondance dans data/maps/</span>
         </td>
-        <td class="step-where">💻 Local</td>
-        <td class="step-icon">❌</td>
-        <td class="step-icon">❌</td>
+        <td class="step-where">&#128187; Local</td>
+        <td class="step-icon">&#10060;</td>
+        <td class="step-icon">&#10060;</td>
       </tr>
       <tr class="step-local">
         <td class="step-num">15</td>
         <td>
-          <span data-lang="pt" class="active">Salva log da operação em logs/</span>
+          <span data-lang="pt" class="active">Salva log da operacao em logs/</span>
           <span data-lang="en">Saves operation log to logs/</span>
-          <span data-lang="es">Guarda log de operación en logs/</span>
+          <span data-lang="es">Guarda log de operacion en logs/</span>
           <span data-lang="zh">将操作日志保存到 logs/</span>
           <span data-lang="hi">ऑपरेशन लॉग logs/ में सहेजता है</span>
-          <span data-lang="fr">Enregistre le journal d'opération dans logs/</span>
+          <span data-lang="fr">Enregistre le journal d'operation dans logs/</span>
         </td>
-        <td class="step-where">💻 Local</td>
-        <td class="step-icon">❌</td>
-        <td class="step-icon">❌</td>
+        <td class="step-where">&#128187; Local</td>
+        <td class="step-icon">&#10060;</td>
+        <td class="step-icon">&#10060;</td>
       </tr>
       <tr class="step-cloud">
         <td class="step-num">16</td>
         <td>
-          <span data-lang="pt" class="active">Claude/IA lê o arquivo anonimizado</span>
+          <span data-lang="pt" class="active">Claude/IA le o arquivo anonimizado</span>
           <span data-lang="en">Claude/AI reads the anonymized file</span>
           <span data-lang="es">Claude/IA lee el archivo anonimizado</span>
           <span data-lang="zh">Claude/AI 读取匿名文件</span>
           <span data-lang="hi">Claude/AI अनामीकृत फ़ाइल पढ़ता है</span>
-          <span data-lang="fr">Claude/IA lit le fichier anonymisé</span>
+          <span data-lang="fr">Claude/IA lit le fichier anonymise</span>
         </td>
-        <td class="step-where">☁️ Nuvem</td>
-        <td class="step-icon">✅</td>
+        <td class="step-where">&#9729;&#65039; Nuvem</td>
+        <td class="step-icon">&#9989;</td>
         <td>
-          <span data-lang="pt" class="active">✅ Só dados fictícios</span>
-          <span data-lang="en">✅ Only fictitious data</span>
-          <span data-lang="es">✅ Solo datos ficticios</span>
-          <span data-lang="zh">✅ 仅虚构数据</span>
-          <span data-lang="hi">✅ केवल काल्पनिक डेटा</span>
-          <span data-lang="fr">✅ Données fictives uniquement</span>
+          <span data-lang="pt" class="active">&#9989; So dados ficticios</span>
+          <span data-lang="en">&#9989; Only fictitious data</span>
+          <span data-lang="es">&#9989; Solo datos ficticios</span>
+          <span data-lang="zh">&#9989; 仅虚构数据</span>
+          <span data-lang="hi">&#9989; केवल काल्पनिक डेटा</span>
+          <span data-lang="fr">&#9989; Donnees fictives uniquement</span>
         </td>
       </tr>
       <tr class="step-cloud">
         <td class="step-num">17</td>
         <td>
-          <span data-lang="pt" class="active">Claude/IA realiza análise e responde</span>
+          <span data-lang="pt" class="active">Claude/IA realiza analise e responde</span>
           <span data-lang="en">Claude/AI performs analysis and responds</span>
-          <span data-lang="es">Claude/IA realiza análisis y responde</span>
+          <span data-lang="es">Claude/IA realiza analisis y responde</span>
           <span data-lang="zh">Claude/AI 进行分析并响应</span>
           <span data-lang="hi">Claude/AI विश्लेषण करता है और जवाब देता है</span>
-          <span data-lang="fr">Claude/IA effectue l'analyse et répond</span>
+          <span data-lang="fr">Claude/IA effectue l'analyse et repond</span>
         </td>
-        <td class="step-where">☁️ Nuvem</td>
-        <td class="step-icon">✅</td>
+        <td class="step-where">&#9729;&#65039; Nuvem</td>
+        <td class="step-icon">&#9989;</td>
         <td>
-          <span data-lang="pt" class="active">✅ Só resultados fictícios</span>
-          <span data-lang="en">✅ Only fictitious results</span>
-          <span data-lang="es">✅ Solo resultados ficticios</span>
-          <span data-lang="zh">✅ 仅虚构结果</span>
-          <span data-lang="hi">✅ केवल काल्पनिक परिणाम</span>
-          <span data-lang="fr">✅ Résultats fictifs uniquement</span>
+          <span data-lang="pt" class="active">&#9989; So resultados ficticios</span>
+          <span data-lang="en">&#9989; Only fictitious results</span>
+          <span data-lang="es">&#9989; Solo resultados ficticios</span>
+          <span data-lang="zh">&#9989; 仅虚构结果</span>
+          <span data-lang="hi">&#9989; केवल काल्पनिक परिणाम</span>
+          <span data-lang="fr">&#9989; Resultats fictifs uniquement</span>
         </td>
       </tr>
       <tr class="step-cloud">
@@ -821,56 +1294,56 @@
           <span data-lang="es">Claude/IA genera script Python para correr localmente</span>
           <span data-lang="zh">Claude/AI 生成本地运行的 Python 脚本</span>
           <span data-lang="hi">Claude/AI स्थानीय रूप से चलाने के लिए Python स्क्रिप्ट बनाता है</span>
-          <span data-lang="fr">Claude/IA génère un script Python pour exécution locale</span>
+          <span data-lang="fr">Claude/IA genere un script Python pour execution locale</span>
         </td>
-        <td class="step-where">☁️ Nuvem</td>
-        <td class="step-icon">✅</td>
+        <td class="step-where">&#9729;&#65039; Nuvem</td>
+        <td class="step-icon">&#9989;</td>
         <td>
-          <span data-lang="pt" class="active">✅ Só o código, sem dados</span>
-          <span data-lang="en">✅ Only code, no data</span>
-          <span data-lang="es">✅ Solo el código, sin datos</span>
-          <span data-lang="zh">✅ 仅代码，无数据</span>
-          <span data-lang="hi">✅ केवल कोड, कोई डेटा नहीं</span>
-          <span data-lang="fr">✅ Code uniquement, pas de données</span>
+          <span data-lang="pt" class="active">&#9989; So o codigo, sem dados</span>
+          <span data-lang="en">&#9989; Only code, no data</span>
+          <span data-lang="es">&#9989; Solo el codigo, sin datos</span>
+          <span data-lang="zh">&#9989; 仅代码，无数据</span>
+          <span data-lang="hi">&#9989; केवल कोड, कोई डेटा नहीं</span>
+          <span data-lang="fr">&#9989; Code uniquement, pas de donnees</span>
         </td>
       </tr>
       <tr class="step-local">
         <td class="step-num">19</td>
         <td>
-          <span data-lang="pt" class="active">Script roda nos dados reais localmente → results/</span>
-          <span data-lang="en">Script runs on real data locally → results/</span>
-          <span data-lang="es">Script corre en datos reales localmente → results/</span>
-          <span data-lang="zh">脚本在本地真实数据上运行 → results/</span>
-          <span data-lang="hi">स्क्रिप्ट स्थानीय रूप से असली डेटा पर चलता है → results/</span>
-          <span data-lang="fr">Le script s'exécute localement sur les données réelles → results/</span>
+          <span data-lang="pt" class="active">Script roda nos dados reais localmente &rarr; results/</span>
+          <span data-lang="en">Script runs on real data locally &rarr; results/</span>
+          <span data-lang="es">Script corre en datos reales localmente &rarr; results/</span>
+          <span data-lang="zh">脚本在本地真实数据上运行 &rarr; results/</span>
+          <span data-lang="hi">स्क्रिप्ट स्थानीय रूप से असली डेटा पर चलता है &rarr; results/</span>
+          <span data-lang="fr">Le script s'execute localement sur les donnees reelles &rarr; results/</span>
         </td>
-        <td class="step-where">💻 Local</td>
-        <td class="step-icon">❌</td>
-        <td class="step-icon">❌</td>
+        <td class="step-where">&#128187; Local</td>
+        <td class="step-icon">&#10060;</td>
+        <td class="step-icon">&#10060;</td>
       </tr>
     </tbody>
   </table>
 
   <div class="steps-summary">
-    <span class="pill"><strong class="green">15</strong> <span data-lang="pt" class="active">passos locais</span><span data-lang="en">local steps</span><span data-lang="es">pasos locales</span><span data-lang="zh">本地步骤</span><span data-lang="hi">स्थानीय कदम</span><span data-lang="fr">étapes locales</span></span>
-    <span class="pill"><strong class="blue">4</strong> <span data-lang="pt" class="active">passos nuvem</span><span data-lang="en">cloud steps</span><span data-lang="es">pasos nube</span><span data-lang="zh">云步骤</span><span data-lang="hi">क्लाउड कदम</span><span data-lang="fr">étapes cloud</span></span>
-    <span class="pill"><strong class="green">0</strong> <span data-lang="pt" class="active">dados reais expostos</span><span data-lang="en">real data exposed</span><span data-lang="es">datos reales expuestos</span><span data-lang="zh">真实数据暴露</span><span data-lang="hi">असली डेटा उजागर</span><span data-lang="fr">données réelles exposées</span></span>
+    <span class="pill"><strong class="green">15</strong> <span data-lang="pt" class="active">passos locais</span><span data-lang="en">local steps</span><span data-lang="es">pasos locales</span><span data-lang="zh">本地步骤</span><span data-lang="hi">स्थानीय कदम</span><span data-lang="fr">etapes locales</span></span>
+    <span class="pill"><strong class="blue">4</strong> <span data-lang="pt" class="active">passos nuvem</span><span data-lang="en">cloud steps</span><span data-lang="es">pasos nube</span><span data-lang="zh">云步骤</span><span data-lang="hi">क्लाउड कदम</span><span data-lang="fr">etapes cloud</span></span>
+    <span class="pill"><strong class="green">0</strong> <span data-lang="pt" class="active">dados reais expostos</span><span data-lang="en">real data exposed</span><span data-lang="es">datos reales expuestos</span><span data-lang="zh">真实数据暴露</span><span data-lang="hi">असली डेटा उजागर</span><span data-lang="fr">donnees reelles exposees</span></span>
   </div>
 </section>
 
 <footer>
-  <div class="footer-copy">© 2026 PSA — Privacy Shield Agent</div>
+  <div class="footer-copy">&copy; 2026 PSA — Privacy Shield Agent</div>
   <div class="footer-author">
-    <span data-lang="pt" class="active">por <span>Marcos Cruz</span> — Brasília/DF</span>
-    <span data-lang="en">by <span>Marcos Cruz</span> — Brasília/DF</span>
-    <span data-lang="es">por <span>Marcos Cruz</span> — Brasília/DF</span>
-    <span data-lang="zh">作者 <span>Marcos Cruz</span> — Brasília/DF</span>
-    <span data-lang="hi"><span>Marcos Cruz</span> द्वारा — Brasília/DF</span>
-    <span data-lang="fr">par <span>Marcos Cruz</span> — Brasília/DF</span>
+    <span data-lang="pt" class="active">por <span>Marcos Cruz</span> — Brasilia/DF</span>
+    <span data-lang="en">by <span>Marcos Cruz</span> — Brasilia/DF</span>
+    <span data-lang="es">por <span>Marcos Cruz</span> — Brasilia/DF</span>
+    <span data-lang="zh">作者 <span>Marcos Cruz</span> — Brasilia/DF</span>
+    <span data-lang="hi"><span>Marcos Cruz</span> द्वारा — Brasilia/DF</span>
+    <span data-lang="fr">par <span>Marcos Cruz</span> — Brasilia/DF</span>
   </div>
 </footer>
 
-<iframe name="hiddenFrame" style="display:none"></iframe>
+<iframe name="hiddenFrame" id="hiddenFrame" style="display:none"></iframe>
 <script>
 const LANGS = ['pt','en','es','zh','hi','fr'];
 const PLACEHOLDERS = { pt:'seu@email.com', en:'your@email.com', es:'tu@email.com', zh:'您的@邮箱.com', hi:'आपका@ईमेल.com', fr:'votre@email.com' };
@@ -895,7 +1368,6 @@ function submitWaitlist() {
     setTimeout(() => inp.style.outline = '', 1500);
     return;
   }
-  // Envia para Google Forms via iframe oculto (sem redirecionar a página)
   const FORM_ACTION = 'https://docs.google.com/forms/d/e/1FAIpQLSdTG9WkJVGGzTLUq7qFLTLJjzX9J9YMY5BnhWu0kXTmsunH6w/formResponse';
   const ENTRY_ID = 'entry.1159836105';
   const iframe = document.getElementById('hiddenFrame');
