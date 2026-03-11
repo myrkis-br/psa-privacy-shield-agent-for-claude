@@ -134,6 +134,13 @@ python3 scripts/psa.py --register data/real/           # pasta inteira
 python3 scripts/psa.py --list-files
 ```
 
+### Histórico de anonimizações
+```bash
+python3 scripts/psa.py --history DOC_001   # lista todas as execuções do arquivo
+```
+Mostra: data/hora, arquivo gerado, métricas (linhas/páginas, entidades, % enviado).
+Funciona com planilhas, PDFs e documentos.
+
 ### Anonimizar por código genérico (preferível)
 ```bash
 python3 scripts/psa.py DOC_001

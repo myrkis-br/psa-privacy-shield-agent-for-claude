@@ -306,6 +306,82 @@ def _cmd_register(entrada: str) -> None:
     sys.exit(0)
 
 
+def _cmd_history(code: str) -> None:
+    """Mostra histórico de anonimizações de um código DOC_NNN."""
+    from file_registry import get_history
+
+    history = get_history(code)
+    if history is None:
+        log.error(f"Código não encontrado: {code}")
+        log.error("Use --list-files para ver os códigos disponíveis.")
+        sys.exit(1)
+
+    print("\n" + "=" * 70)
+    print("PSA — HISTÓRICO DE ANONIMIZAÇÕES")
+    print("=" * 70)
+    print(f"  Código       : {history['code']}{history['suffix']}")
+    print(f"  Registrado em: {history['registered_at'][:19]}")
+    print(f"  Execuções    : {history['total_executions']}")
+    print("─" * 70)
+
+    if history["total_executions"] == 0:
+        print("  Nenhuma anonimização encontrada para este código.")
+        print("  Execute: python3 scripts/psa.py " + history["code"])
+    else:
+        for i, ex in enumerate(history["executions"], 1):
+            anon_name = Path(ex["anon_file"]).name
+            size_kb = ex["anon_size"] / 1024
+            print(f"\n  [{i}] {ex['datetime']}")
+            print(f"      Arquivo: {anon_name} ({size_kb:.1f} KB)")
+
+            if ex.get("entities"):
+                ent = ex["entities"]
+                tipo = ent.get("tipo", "spreadsheet")
+
+                if tipo == "pdf":
+                    print(
+                        f"      Páginas: {ent.get('total_paginas', '?')} total → "
+                        f"{ent.get('paginas_amostra', '?')} amostradas"
+                    )
+                    print(f"      Palavras: ~{ent.get('total_palavras', '?')}")
+                    print(
+                        f"      Entidades: {ent.get('total_entidades', 0)} "
+                        f"({ent.get('pessoas_substituidas', 0)} pessoas, "
+                        f"{ent.get('empresas_substituidas', 0)} empresas)"
+                    )
+                elif tipo == "document":
+                    print(
+                        f"      Parágrafos: {ent.get('total_paragrafos', '?')} total → "
+                        f"{ent.get('paragrafos_amostra', '?')} amostrados"
+                    )
+                    print(
+                        f"      Entidades: {ent.get('total_entidades', 0)} "
+                        f"({ent.get('pessoas_substituidas', 0)} pessoas, "
+                        f"{ent.get('empresas_substituidas', 0)} empresas)"
+                    )
+                else:
+                    if ent.get("total_linhas_original") is not None:
+                        pct = ent.get("pct_enviado")
+                        pct_str = f"{pct}%" if pct is not None else "—"
+                        print(
+                            f"      Linhas : {ent['total_linhas_original']} total → "
+                            f"{ent['total_linhas_amostra']} amostra "
+                            f"({pct_str} enviado)"
+                        )
+                    if ent.get("colunas_anonimizadas") is not None:
+                        print(
+                            f"      Colunas: {ent['colunas_anonimizadas']} anonimizadas"
+                            f" + {ent.get('colunas_texto_livre', 0)} texto livre"
+                        )
+                    if ent.get("amostragem"):
+                        print(f"      Modo   : {ent['amostragem']}")
+            elif ex.get("map_file") is None:
+                print(f"      (mapa não encontrado)")
+
+    print("\n" + "=" * 70)
+    sys.exit(0)
+
+
 def _cmd_list_files() -> None:
     """Lista arquivos registrados (apenas códigos, sem nomes reais)."""
     from file_registry import list_registered
@@ -386,6 +462,10 @@ Exemplos:
         "--list-supported", action="store_true",
         help="Lista os formatos suportados e sai",
     )
+    parser.add_argument(
+        "--history", metavar="DOC_NNN",
+        help="Mostra histórico de anonimizações de um código registrado",
+    )
 
     args = parser.parse_args()
 
@@ -395,6 +475,9 @@ Exemplos:
 
     if args.register:
         _cmd_register(args.register)
+
+    if args.history:
+        _cmd_history(args.history)
 
     if args.list_supported:
         print("\nFormatos suportados pelo PSA:\n")

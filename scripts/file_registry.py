@@ -170,3 +170,118 @@ def get_code_for_path(real_path: Path) -> Optional[str]:
         if entry["real_path"] == real_str:
             return code
     return None
+
+
+def get_history(code: str) -> Optional[Dict]:
+    """
+    Retorna o histórico de anonimizações de um código DOC_NNN.
+
+    Busca em data/anonymized/ e data/maps/ por arquivos cujo nome base
+    corresponda ao arquivo real registrado sob esse código.
+
+    Returns:
+        Dict com info do registro + lista de execuções, ou None se código inválido.
+    """
+    clean = code.upper().split(".")[0] if "." in code else code.upper()
+    registry = _load_registry()
+    entry = registry["files"].get(clean)
+    if entry is None:
+        return None
+
+    real_name = entry["real_name"]
+    stem = Path(real_name).stem  # ex: "peticao_mpf_agua"
+
+    ANONYMIZED_DIR = BASE_DIR / "data" / "anonymized"
+    MAPS_DIR_LOCAL = BASE_DIR / "data" / "maps"
+
+    # Busca arquivos anonimizados que contenham o stem no nome
+    anon_files = sorted(
+        [f for f in ANONYMIZED_DIR.iterdir() if f.is_file() and stem in f.name],
+        key=lambda f: f.stat().st_mtime,
+    ) if ANONYMIZED_DIR.exists() else []
+
+    executions = []  # type: List[Dict]
+    for anon_file in anon_files:
+        # Tenta encontrar o mapa correspondente pelo timestamp
+        # anon_peticao_mpf_agua_20260311_094500.txt → map_peticao_mpf_agua_20260311_094500.json
+        anon_name = anon_file.stem  # sem extensão
+        # Extrai timestamp: últimos 15 chars antes da extensão (YYYYMMDD_HHMMSS)
+        parts = anon_name.split("_")
+        timestamp_str = None
+        for i in range(len(parts) - 1):
+            candidate = parts[i] + "_" + parts[i + 1]
+            if len(candidate) == 15 and candidate.replace("_", "").isdigit():
+                timestamp_str = candidate
+                break
+
+        # Busca mapa correspondente
+        map_file = None
+        entities = None
+        if timestamp_str:
+            map_candidates = [
+                f for f in MAPS_DIR_LOCAL.iterdir()
+                if f.is_file() and stem in f.name and timestamp_str in f.name and f.suffix == ".json"
+            ] if MAPS_DIR_LOCAL.exists() else []
+            if map_candidates:
+                map_file = map_candidates[0]
+                try:
+                    with open(map_file, "r", encoding="utf-8") as mf:
+                        map_data = json.load(mf)
+                    tipo = map_data.get("tipo", "spreadsheet")
+                    if tipo == "pdf":
+                        stats = map_data.get("estatisticas", {})
+                        pages_sample = map_data.get("paginas_na_amostra", [])
+                        entities = {
+                            "tipo": "pdf",
+                            "total_paginas": map_data.get("total_paginas_original"),
+                            "paginas_amostra": len(pages_sample),
+                            "total_palavras": map_data.get("total_palavras_original"),
+                            "pessoas_substituidas": stats.get("pessoas_substituidas", 0),
+                            "empresas_substituidas": stats.get("empresas_substituidas", 0),
+                            "total_entidades": stats.get("total_entidades", 0),
+                        }
+                    elif tipo == "document":
+                        stats = map_data.get("estatisticas", {})
+                        entities = {
+                            "tipo": "document",
+                            "total_paragrafos": map_data.get("total_paragrafos_original"),
+                            "paragrafos_amostra": map_data.get("paragrafos_na_amostra"),
+                            "pessoas_substituidas": stats.get("pessoas_substituidas", 0),
+                            "empresas_substituidas": stats.get("empresas_substituidas", 0),
+                            "total_entidades": stats.get("total_entidades", 0),
+                        }
+                    else:
+                        # Planilha (CSV/XLSX)
+                        entities = {
+                            "tipo": "spreadsheet",
+                            "total_linhas_original": map_data.get("total_linhas_original"),
+                            "total_linhas_amostra": map_data.get("total_linhas_amostra"),
+                            "pct_enviado": map_data.get("pct_enviado"),
+                            "pct_economizado": map_data.get("pct_economizado"),
+                            "amostragem": map_data.get("amostragem"),
+                        }
+                        cols = map_data.get("colunas", {})
+                        entities["colunas_anonimizadas"] = sum(1 for c in cols.values() if c.get("anonimizada"))
+                        entities["colunas_texto_livre"] = sum(1 for c in cols.values() if c.get("texto_livre"))
+                except (json.JSONDecodeError, KeyError):
+                    pass
+
+        # Formato de data legível a partir do mtime
+        mtime = anon_file.stat().st_mtime
+        dt = datetime.fromtimestamp(mtime)
+
+        executions.append({
+            "datetime": dt.strftime("%Y-%m-%d %H:%M:%S"),
+            "anon_file": str(anon_file),
+            "anon_size": anon_file.stat().st_size,
+            "map_file": str(map_file) if map_file else None,
+            "entities": entities,
+        })
+
+    return {
+        "code": clean,
+        "suffix": entry["suffix"],
+        "registered_at": entry["registered_at"],
+        "total_executions": len(executions),
+        "executions": executions,
+    }
