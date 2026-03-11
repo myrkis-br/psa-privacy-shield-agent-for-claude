@@ -145,20 +145,24 @@ python3 scripts/psa.py DOC_001 --sample 50
 python3 scripts/psa.py data/real/<arquivo>
 ```
 
-### Amostragem inteligente (planilhas)
+### Amostragem Inteligente v5.1
 
-O PSA calcula automaticamente o tamanho ideal da amostra:
+> **O PSA é estatisticamente inteligente — envia o mínimo necessário, nunca mais do que precisa.**
+
+A função `calculate_sample_size(n)` em `anonymizer.py` determina automaticamente a amostra
+ideal com base no Teorema Central do Limite (n ≥ 30):
 
 | Tamanho do arquivo (N linhas) | Amostra enviada     | Regra                                    |
 |-------------------------------|---------------------|------------------------------------------|
 | N ≤ 30                        | 100% (todas)        | Arquivo pequeno — manda tudo com aviso   |
 | 31 a 100                      | 50% de N (mín. 30)  | Reduz mas mantém representatividade      |
-| 101 a 1.000                   | 100 linhas          | Padrão                                   |
-| 1.001 a 10.000                | 100 linhas          | Idem                                     |
+| 101 a 10.000                  | 100 linhas          | Padrão                                   |
 | 10.001 a 100.000              | 150 linhas          | Arquivo grande — amostra maior           |
 | 100.001+                      | 200 linhas          | Máximo recomendado                       |
 
-O parâmetro `--sample` sobrescreve a lógica automática quando informado explicitamente.
+- O parâmetro `--sample N` sobrescreve a lógica automática quando informado explicitamente
+- Log registra: tamanho real, tamanho da amostra, % enviado, % economizado
+- Amostra NUNCA pode ser maior que o arquivo real
 
 ### Opções de amostragem
 ```bash

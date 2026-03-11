@@ -5,7 +5,7 @@
 **Seus dados nunca saem. A IA trabalha no escuro.**
 
 [![Audit Score](https://img.shields.io/badge/Audit%20Score-100%2F100-00e5ff?style=for-the-badge&logo=shield&logoColor=white)](https://github.com/myrkis-br/psa-privacy-shield-agent-for-ai)
-[![Version](https://img.shields.io/badge/Version-v1.0.0-00ff9d?style=for-the-badge)](https://github.com/myrkis-br/psa-privacy-shield-agent-for-ai/releases/tag/v1.0.0)
+[![Version](https://img.shields.io/badge/Version-v5.1-00ff9d?style=for-the-badge)](https://github.com/myrkis-br/psa-privacy-shield-agent-for-ai/releases/tag/v5.1)
 [![License](https://img.shields.io/badge/License-MIT-7b5ea7?style=for-the-badge)](LICENSE)
 [![Python](https://img.shields.io/badge/Python-3.10+-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://python.org)
 [![LGPD](https://img.shields.io/badge/LGPD-Compliant-green?style=for-the-badge)](https://www.planalto.gov.br/ccivil_03/_ato2015-2018/2018/lei/l13709.htm)
@@ -15,7 +15,7 @@
 *Camada de segurança local que intercepta e anonimiza dados sensíveis **antes** de enviá-los a qualquer IA.*
 *Funciona com Claude, ChatGPT, Gemini e qualquer LLM via API.*
 
-[Site](https://myrkis-br.github.io/psa-privacy-shield-agent-for-ai) · [Release v1.0.0](https://github.com/myrkis-br/psa-privacy-shield-agent-for-ai/releases/tag/v1.0.0) · [Lista de Espera](https://myrkis-br.github.io/psa-privacy-shield-agent-for-ai)
+[Site](https://myrkis-br.github.io/psa-privacy-shield-agent-for-ai) · [Release v5.1](https://github.com/myrkis-br/psa-privacy-shield-agent-for-ai/releases/tag/v5.1) · [Lista de Espera](https://myrkis-br.github.io/psa-privacy-shield-agent-for-ai)
 
 </div>
 
@@ -73,18 +73,45 @@ Termos de uso de IAs podem permitir uso dos seus dados para treinar modelos.
 
 ---
 
+## Amostragem Inteligente v5.1
+
+> **O PSA é estatisticamente inteligente — envia o mínimo necessário para cada tamanho de arquivo, nunca mais do que precisa.**
+
+A função `calculate_sample_size(n)` determina automaticamente a amostra ideal com base no Teorema Central do Limite (n >= 30):
+
+| Tamanho do arquivo (N linhas) | Amostra enviada | Regra |
+|---|---|---|
+| N <= 30 | 100% (todas as linhas) | Arquivo pequeno — manda tudo com aviso no log |
+| 31 a 100 | 50% de N (mínimo 30) | Reduz mas mantém representatividade estatística |
+| 101 a 10.000 | 100 linhas | Padrão |
+| 10.001 a 100.000 | 150 linhas | Arquivo grande — amostra ligeiramente maior |
+| 100.001+ | 200 linhas | Máximo recomendado |
+
+### Exemplos reais
+
+| Arquivo | Total | Amostra | % enviado | Comportamento |
+|---|---|---|---|---|
+| Relatório pequeno | 25 linhas | 25 (tudo) | 100% | Aviso: "Arquivo pequeno — enviando todas as 25 linhas" |
+| Lista de clientes | 60 linhas | 30 | 50% | `max(30, 60//2) = 30` |
+| Folha GDF | 256.013 linhas | 200 | 0,08% | Máximo recomendado para arquivos 100K+ |
+
+O parâmetro `--sample N` no CLI sobrescreve a lógica automática quando informado explicitamente.
+
+---
+
 ## Benefícios adicionais (consequências da proteção)
 
 A segurança vem primeiro. Mas ao proteger seus dados, o PSA entrega dois bônus:
 
-### Economia de 99% dos tokens
+### Economia de até 99,9% dos tokens
 
-Ao proteger seus dados, o PSA envia apenas 100 linhas — economizando até **99,96% dos tokens**.
+Ao proteger seus dados, o PSA envia apenas o mínimo estatístico — economizando até **99,92% dos tokens**.
 
-| Cenário | Sem PSA | Com PSA | Economia |
+| Cenário | Sem PSA | Com PSA (v5.1) | Economia |
 |---|---|---|---|
-| Planilha de 256.000 linhas | 256.000 linhas enviadas | 100 linhas enviadas | **99,96%** |
-| Custo estimado por análise | ~US$ 12,00 | ~US$ 0,05 | **99,6%** |
+| Planilha de 256.000 linhas | 256.000 linhas enviadas | 200 linhas enviadas | **99,92%** |
+| Planilha de 60 linhas | 60 linhas enviadas | 30 linhas enviadas | **50%** |
+| Custo estimado (256K linhas) | ~US$ 12,00 | ~US$ 0,10 | **99,2%** |
 
 ### Análises 30x mais rápidas
 
@@ -112,7 +139,7 @@ Como a amostra é mínima, análises de 15 minutos viram 30 segundos.
 | 3 | Valida segurança do arquivo | 💻 Local | ❌ Não | ❌ Não |
 | 4 | Detecta extensão e escolhe script correto | 💻 Local | ❌ Não | ❌ Não |
 | 5 | Lê o arquivo real do disco | 💻 Local | ❌ Não | ❌ Não |
-| 6 | Faz amostragem (padrão: 100 linhas) | 💻 Local | ❌ Não | ❌ Não |
+| 6 | Amostragem inteligente — `calculate_sample_size(n)` determina o mínimo necessário **[NOVO v5.1]** | 💻 Local | ❌ Não | ❌ Não |
 | 7 | Detecta colunas sensíveis (70+ keywords) | 💻 Local | ❌ Não | ❌ Não |
 | 8 | Renomeia colunas para COL_A, COL_B... | 💻 Local | ❌ Não | ❌ Não |
 | 9 | Anonimiza valores com Faker pt_BR offline | 💻 Local | ❌ Não | ❌ Não |
