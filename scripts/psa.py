@@ -81,6 +81,20 @@ SUPPORTED = {
     ".json": ("json",        "JSON"),
     # XML
     ".xml":  ("xml",         "XML"),
+    # HTML
+    ".html": ("html",        "HTML"),
+    ".htm":  ("html",        "HTML"),
+    # Config
+    ".yaml": ("yaml",        "YAML"),
+    ".yml":  ("yaml",        "YAML"),
+    # Database
+    ".sql":  ("sql",         "SQL dump"),
+    # Logs
+    ".log":  ("log",         "Log de aplicação"),
+    # Contatos
+    ".vcf":  ("vcf",         "vCard (contatos)"),
+    # Dados colunares
+    ".parquet": ("parquet",  "Parquet (colunar)"),
 }
 
 # H-08: Diretórios protegidos — inclui logs/
@@ -193,6 +207,30 @@ def _anonymize(
         elif kind == "xml":
             from anonymize_xml import anonymize_xml
             return anonymize_xml(input_path)
+
+        elif kind == "html":
+            from anonymize_html import anonymize_html
+            return anonymize_html(input_path, sample_paragraphs=paragraphs)
+
+        elif kind == "yaml":
+            from anonymize_yaml import anonymize_yaml
+            return anonymize_yaml(input_path)
+
+        elif kind == "sql":
+            from anonymize_sql import anonymize_sql
+            return anonymize_sql(input_path, sample_size=sample)
+
+        elif kind == "log":
+            from anonymize_log import anonymize_log
+            return anonymize_log(input_path, sample_size=sample)
+
+        elif kind == "vcf":
+            from anonymize_vcf import anonymize_vcf
+            return anonymize_vcf(input_path)
+
+        elif kind == "parquet":
+            from anonymize_parquet import anonymize_parquet
+            return anonymize_parquet(input_path, sample_size=sample)
 
     except ImportError as e:
         log.error(f"Dependência ausente: {e}")
@@ -477,7 +515,7 @@ def _adjust_sample_by_risk(
 
     # Só ajusta planilhas e JSON (arrays) automaticamente
     # Para documentos, o ajuste de paragraphs/pages é tratado separadamente
-    if suffix not in (".csv", ".xlsx", ".xls", ".json"):
+    if suffix not in (".csv", ".xlsx", ".xls", ".json", ".parquet"):
         return None
 
     # score 1-3 → padrão (None = amostragem inteligente)
@@ -813,7 +851,7 @@ def _apply_mode_to_sample(
     if user_sample is not None:
         return user_sample
 
-    if suffix not in (".csv", ".xlsx", ".xls", ".json"):
+    if suffix not in (".csv", ".xlsx", ".xls", ".json", ".parquet"):
         return None
 
     if mode == MODE_MAX:

@@ -127,6 +127,14 @@ _EXT_MAP = {
     ".msg":  ("email", "MSG"),
     ".json": ("json", "JSON"),
     ".xml":  ("xml", "XML"),
+    ".html": ("documento", "HTML"),
+    ".htm":  ("documento", "HTML"),
+    ".yaml": ("config", "YAML"),
+    ".yml":  ("config", "YAML"),
+    ".sql":  ("database", "SQL"),
+    ".log":  ("log", "Log"),
+    ".vcf":  ("contato", "vCard"),
+    ".parquet": ("planilha", "Parquet"),
 }
 
 # ---------------------------------------------------------------------------
@@ -318,6 +326,9 @@ def _estimate_holders_spreadsheet(filepath: Path) -> int:
             except Exception:
                 df_full = pd.read_excel(filepath, dtype=str)
                 return len(df_full)
+        elif suffix == ".parquet":
+            df = pd.read_parquet(filepath, engine="pyarrow")
+            return len(df)
     except Exception:
         return 0
 
@@ -681,6 +692,67 @@ def _extract_text_sample(filepath: Path, max_chars: int = 10000) -> str:
             return _extract_text_sample_xml(root, max_chars)
         return ""
 
+    elif suffix in (".html", ".htm"):
+        try:
+            import re as _re
+            for enc in ("utf-8", "latin-1", "cp1252"):
+                try:
+                    raw = filepath.read_text(encoding=enc)
+                    # Strip HTML tags to get text
+                    text = _re.sub(r'<(script|style)[^>]*>.*?</\1>', ' ', raw, flags=_re.DOTALL | _re.IGNORECASE)
+                    text = _re.sub(r'<[^>]+>', ' ', text)
+                    text = _re.sub(r'\s+', ' ', text).strip()
+                    return text[:max_chars]
+                except UnicodeDecodeError:
+                    continue
+        except Exception:
+            return ""
+
+    elif suffix in (".yaml", ".yml"):
+        try:
+            for enc in ("utf-8", "latin-1"):
+                try:
+                    return filepath.read_text(encoding=enc)[:max_chars]
+                except UnicodeDecodeError:
+                    continue
+        except Exception:
+            return ""
+
+    elif suffix == ".sql":
+        try:
+            for enc in ("utf-8", "latin-1", "cp1252"):
+                try:
+                    return filepath.read_text(encoding=enc)[:max_chars]
+                except UnicodeDecodeError:
+                    continue
+        except Exception:
+            return ""
+
+    elif suffix == ".log":
+        try:
+            for enc in ("utf-8", "latin-1", "cp1252"):
+                try:
+                    return filepath.read_text(encoding=enc)[:max_chars]
+                except UnicodeDecodeError:
+                    continue
+        except Exception:
+            return ""
+
+    elif suffix == ".vcf":
+        try:
+            return filepath.read_text(encoding="utf-8", errors="replace")[:max_chars]
+        except Exception:
+            return ""
+
+    elif suffix == ".parquet":
+        try:
+            df = pd.read_parquet(filepath, engine="pyarrow")
+            text = " ".join(str(c) for c in df.columns) + "\n"
+            text += df.head(20).to_string()
+            return text[:max_chars]
+        except Exception:
+            return ""
+
     return ""
 
 
@@ -699,6 +771,12 @@ def _get_columns(filepath: Path) -> Optional[List[str]]:
     elif suffix in (".xlsx", ".xls"):
         try:
             df = pd.read_excel(filepath, dtype=str, nrows=0)
+            return list(df.columns)
+        except Exception:
+            pass
+    elif suffix == ".parquet":
+        try:
+            df = pd.read_parquet(filepath, engine="pyarrow")
             return list(df.columns)
         except Exception:
             pass
