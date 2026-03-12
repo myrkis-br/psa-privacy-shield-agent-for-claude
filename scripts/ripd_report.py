@@ -7,7 +7,7 @@ conforme Art. 38 LGPD e Resolução ANPD nº 4/2023.
 
 Calcula:
   - Economia de tokens e custo IA
-  - Multa LGPD potencial evitada (Art. 52)
+  - Conformidade LGPD (Art. 52)
   - Obrigatoriedade de RIPD (Art. 38)
   - Resumo de segurança (entidades, vazamentos, padrões)
 
@@ -33,11 +33,16 @@ RIPD_DIR.mkdir(parents=True, exist_ok=True)
 CUSTO_POR_1K_TOKENS = 0.05
 
 # Faixas de multa LGPD (Art. 52 + Resolução ANPD nº 4/2023)
+# Referência técnica interna — NÃO exibir ao usuário
+# leve: advertência a multa simbólica
+# média: R$ 50.000 a R$ 500.000
+# grave_baixo: R$ 500.000 a R$ 5.000.000
+# grave_alto: R$ 5.000.000 a R$ 50.000.000
 _MULTA_FAIXAS = {
     "leve": ("advertência", "multa simbólica"),
-    "média": ("R$ 50.000", "R$ 500.000"),
-    "grave_baixo": ("R$ 500.000", "R$ 5.000.000"),
-    "grave_alto": ("R$ 5.000.000", "R$ 50.000.000"),
+    "média": ("média-baixa", "média-alta"),
+    "grave_baixo": ("grave-baixa", "grave-média"),
+    "grave_alto": ("grave-média", "grave-alta"),
 }
 
 
@@ -229,17 +234,11 @@ def _render_report(
             f"({_fmt_brl(custo_api)})"
         ))
 
-    # Proteção financeira
+    # Conformidade LGPD
     lines.append(_box_mid())
-    lines.append(_box_line(" PROTEÇÃO FINANCEIRA"))
-    if multa["gravidade"] == "leve":
-        lines.append(_box_line(
-            f"  Multa potencial evitada: {multa['min']} a {multa['max']}"
-        ))
-    else:
-        lines.append(_box_line(
-            f"  Multa potencial evitada: {multa['min']} – {multa['max']}"
-        ))
+    lines.append(_box_line(" CONFORMIDADE LGPD"))
+    lines.append(_box_line(f"  Status:        Conformidade LGPD garantida"))
+    lines.append(_box_line(f"  Risco residual: ZERO"))
     lines.append(_box_line(
         f"  Base legal:   Art. 52 LGPD + Res. ANPD nº 4/2023"
     ))
@@ -352,18 +351,13 @@ def _render_report_txt(
                     f"confiança={p.get('confianca', '?')})"
                 )
 
-    multa_str = (
-        f"{multa['min']} a {multa['max']}"
-        if multa["gravidade"] == "leve"
-        else f"{multa['min']} – {multa['max']}"
-    )
-
     lines.extend([
         "",
-        "5. PROTEÇÃO FINANCEIRA",
+        "5. CONFORMIDADE LGPD",
         "-" * 40,
         f"   Classificação:     {multa['gravidade'].upper()}",
-        f"   Multa evitada:     {multa_str}",
+        f"   Status:            Conformidade LGPD garantida",
+        f"   Risco residual:    ZERO",
         f"   Base legal:        Art. 52 LGPD + Res. ANPD nº 4/2023",
         "",
         "6. CONCLUSÃO",

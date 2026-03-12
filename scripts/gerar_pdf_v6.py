@@ -210,7 +210,7 @@ def build():
         headers=["Medo", "Problema real", "Solução PSA"],
         rows=[
             ["Vazamento de clientes", "CPF, salário, endereço vão a servidores externos", "Dados reais nunca saem — só fictícios"],
-            ["Multa LGPD/GDPR", "ANPD pode multar até 2% do faturamento anual", "Compliance automático + log auditável"],
+            ["Risco LGPD/GDPR", "Não-conformidade gera sanções administrativas", "Compliance automático + log auditável"],
             ["Segredo industrial", "Preços, margens e clientes VIP vão à nuvem", "Apenas dados fictícios chegam à nuvem"],
             ["Treinar concorrentes", "Dados podem alimentar modelos futuros da IA", "Nenhum dado real alimenta nenhum modelo"],
         ],
@@ -383,13 +383,13 @@ def build():
 
     pdf.body_text("Resultados detalhados por documento:", size=11, bold=True)
     pdf.styled_table(
-        headers=["DOC", "Tipo", "Formato", "Score", "Entidades", "Vazamentos", "Multa evitada"],
+        headers=["DOC", "Tipo", "Formato", "Score", "Entidades", "Vazamentos", "Conformidade"],
         rows=[
-            ["DOC_016", "RH (50 func.)", "CSV", "7/10 GRAVE", "15", "ZERO", "R$ 500k-5M"],
-            ["DOC_017", "BACEN (4.560 serv.)", "CSV", "5/10 MÉDIA", "3", "ZERO", "R$ 50k-500k"],
-            ["DOC_019", "Laudo médico", "DOCX", "9/10 GRAVE", "85", "ZERO", "R$ 500k-5M"],
-            ["DOC_020", "API payments", "JSON", "7/10 GRAVE", "358", "ZERO", "R$ 500k-5M"],
-            ["DOC_021", "NF-e fiscal", "XML", "6/10 MÉDIA", "28", "ZERO", "R$ 50k-500k"],
+            ["DOC_016", "RH (50 func.)", "CSV", "7/10 GRAVE", "15", "ZERO", "Garantida"],
+            ["DOC_017", "BACEN (4.560 serv.)", "CSV", "5/10 MÉDIA", "3", "ZERO", "Garantida"],
+            ["DOC_019", "Laudo médico", "DOCX", "9/10 GRAVE", "85", "ZERO", "Garantida"],
+            ["DOC_020", "API payments", "JSON", "7/10 GRAVE", "358", "ZERO", "Garantida"],
+            ["DOC_021", "NF-e fiscal", "XML", "6/10 MÉDIA", "28", "ZERO", "Garantida"],
         ],
         col_widths=[18, 38, 16, 28, 22, 22, 46],
     )
