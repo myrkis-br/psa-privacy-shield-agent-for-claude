@@ -3,7 +3,7 @@
 ### Status: Beta v1.0
 
 **Autor:** Marcos Cruz — Brasília/DF
-**Tagline:** Seu guarda-costas digital. Seu guardião de dados.
+**Tagline:** O agente de IA que protege seus dados antes de qualquer outro agente.
 
 > **Versao Beta** — Em desenvolvimento ativo. Use como camada adicional de protecao, nunca como unica garantia de conformidade. Nao substitui assessoria juridica especializada.
 
@@ -14,7 +14,7 @@
 - **Nome completo:** PSA - Privacy Shield Agent for AI
 - **Sigla:** PSA
 - **Versão atual:** v6.1 — Security Hardening + 21 Extensões
-- **Posicionamento principal:** Camada de **segurança** que protege dados sensíveis *antes* de enviá-los a qualquer IA — e como consequência, economiza até 99,96% dos tokens e torna análises 30x mais rápidas
+- **Posicionamento principal:** **Agente de IA especializado em privacidade** que atua como guardião dos seus dados — age antes do ChatGPT, do Gemini ou de qualquer IA, garantindo que nenhum dado real chegue à nuvem. Como consequência, economiza até 99,96% dos tokens e torna análises 30x mais rápidas
 - **Compatível com:** Claude, ChatGPT, Gemini, Llama e qualquer API de IA
 - **Público-alvo prioritário:** Advocacia, contabilidade/RH, saúde, governo, PMEs
 
@@ -27,7 +27,7 @@
 > **3º Velocidade** — consequência da amostragem mínima
 
 ### A frase que resume tudo:
-*"PSA não é uma ferramenta de produtividade. É uma camada de segurança que, como consequência, também economiza 99% dos tokens e torna qualquer análise 30x mais rápida."*
+*"PSA não é uma ferramenta — é um agente de IA que protege seus dados autonomamente. Como consequência, também economiza 99% dos tokens e torna qualquer análise 30x mais rápida."*
 
 ---
 

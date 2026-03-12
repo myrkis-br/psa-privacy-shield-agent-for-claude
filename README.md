@@ -14,8 +14,7 @@
 [![GDPR](https://img.shields.io/badge/GDPR-Compliant-green?style=for-the-badge)](https://gdpr.eu)
 [![HIPAA](https://img.shields.io/badge/HIPAA-Compliant-green?style=for-the-badge)](https://www.hhs.gov/hipaa)
 
-*Camada de seguranca local que intercepta e anonimiza dados sensiveis **antes** de envia-los a qualquer IA.*
-*Funciona com Claude, ChatGPT, Gemini e qualquer LLM via API.*
+*Agente de IA especializado em privacidade que atua como guardiao dos seus dados — age antes do ChatGPT, do Gemini ou de qualquer IA, garantindo que nenhum dado real chegue a nuvem.*
 
 [Site](https://myrkis-br.github.io/psa-privacy-shield-agent-for-ai) · [Release](https://github.com/myrkis-br/psa-privacy-shield-agent-for-ai/releases) · [Lista de Espera](https://myrkis-br.github.io/psa-privacy-shield-agent-for-ai)
 
@@ -30,7 +29,20 @@
 
 ---
 
-> **PSA nao e uma ferramenta de produtividade. E uma camada de seguranca que, como consequencia, tambem economiza 99% dos tokens e torna qualquer analise 30x mais rapida.**
+> **PSA nao e uma ferramenta — e um agente de IA que protege seus dados autonomamente.** Como consequencia, tambem economiza 99% dos tokens e torna qualquer analise 30x mais rapida.
+
+---
+
+## Como o PSA funciona como agente
+
+O PSA opera em 4 etapas autonomas, sem intervencao humana:
+
+| Etapa | O que o agente faz | Detalhe |
+|-------|---------------------|---------|
+| **Percebe** | Le e interpreta 21 formatos de arquivo | CSV, XLSX, PDF, DOCX, JSON, XML, HTML, SQL, YAML, Parquet e mais |
+| **Decide** | Classifica risco LGPD automaticamente | Score 1-10 por campo, seleciona modo ECO/PADRAO/MAXIMO |
+| **Age** | Anonimiza, gera RIPD e audit trail | Substitui PII por dados ficticios, gera relatorio Art. 38 LGPD, registra SHA256 |
+| **Protege** | Garante que nenhum dado real saia | Validacao anti-vazamento + delecao automatica se detectar falha |
 
 ---
 
