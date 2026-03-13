@@ -27,6 +27,10 @@ venv/
 .venv/
 env/
 .env
+*.env
+.env.*
+secrets.yaml
+secrets.json
 
 # === IDE ===
 .vscode/
